@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1701889605690
+updated: 1701890592158
 created: 1701882355956
 ---
 
@@ -36,7 +36,7 @@ created: 1701882355956
    > + Though the frequency of all the occuraces in all these countries are less than 10%. By the 95% CI Denmark records the highest frequncy (40%) of occurance in the month of Jul23.
    > + Denmark records occurances from Jul23-Sep23, spain and UK records occurances from Sep23-Oct23. Germany,USA records occurances only in oct23 which is very low 0.9% and 0.3%  respectively.
    
-![ba_2_86](assets/plots/BA_2_86.png)
+![ba_2_86](assests/../assets/plots/BA_2_86.png)
 
 1. No records of the following variants B.1.429(Epsilon), B.1.525(Eta), B.1.526(Iota), C.37(Lambda), B.1.621(Mu), P.3(Theta), P.2(Zeta), B.1.640 in the 10 chosen countries during Jan22-Oct23.
 
