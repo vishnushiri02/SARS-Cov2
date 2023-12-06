@@ -25,7 +25,7 @@ created: 1700240802023
         - **_Histogram_** , **_Boxplots_** of the data can be used to visualise the outlier. In Boxplots all the observations beyond the interquartile range criterion($I=[q_{0.25}-1.5.IQR;q_{0.75}+1.5.IQR]$) is considered as outlier.
         - **_Percentiles_** All the observations that are beyond a percentile of interes is considered as outlier.
         - **_Z-Scores_** if the data has a normal distribution. Data are categorised as outliers based on their z-score
-        - **_Hampel filter_** cosiders data points that are plus or minus 3xMAD. MAD : Median absolute deviation is the median of absolute difference between the data and its median. ![example](assets/Pics/MAD.png)
+        - **_
     2. Statistical tests : These tests requires the data is normally distributed. This can be checked by either visualsing the data using a histogram or using shapiro-Wilk normality test - shapiro.text().
         - Grubb's test: The Grubbs test allows to detect whether the highest or lowest value in a dataset is an outlier.
         - Dixon's test : Tests if a particular value is outlier or not
