@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1701962642455
+updated: 1702041679980
 created: 1700240700998
 ---
 # Objective
@@ -22,9 +22,9 @@ graph TD;
 
 - List of locations available in GISAID was obtained from GISAIDR Git repo - [GISAID_LOCATIONS.txt](https://github.com/Wytamma/GISAIDR/blob/master/GISAID_LOCATIONS.txt)
 - The following point are coded in the file ```Work/Data_Analysis/Monthwise_data_submission.Rmd```
-  - From the GISAID, the total number of **_high_**, **_coverge_** completed sequence deposited by each country (200+) in the past 22 months(Jan2022-Oct2023) were retrieved in a month wise fasion using the R Package GISAIDR.
+  - From the GISAID, the total number of **_high_**, **_coverge_** completed sequence deposited by each country (200+) in the past 22 months(Jan2022-Oct2023) were retrieved in a month wise fasion using the R Package GISAIDR. The table is in ```Work/Data_Analysis/country_monthly_submission.csv```
   - Countries that had more than 10,000 sequences deposited in total in the past 22 months were alone considered further.
-  - This included 10 countries : India, South Korea, Denmark, Germany, Norway, Spain, United Kingdom, Canada, USA, Australia
+  - This included 10 countries : India, South Korea, Denmark, Germany, Norway, Spain, United Kingdom, Canada, USA, Australia. ```Work/Data_Analysis/chosen_ten_country_submission.csv```
   - The trend of the time series data of these countries were plotted.
   ![Trends in 10 countries](assets/plots/Country_trend_plots.png)
   - Outlier detection and pruning of the observation horizon(Time period considered): Extreme low values were searched for, using the MAD(Hampel filter) (one of the [[Outlier Estimation and methods|Glossary#outlier-estimation-and-methods]]). Since there were no extreme low values found in any of the countries, the observation time period was not pruned.
@@ -42,7 +42,7 @@ graph TD;
 
 ```Bash
 awk -F";" '{gsub(/[()]/,"",$6);print $5";"$6}' 
-ten_country_mut_data/* 
+ten_country_mut_data/* \
 >ten_country_mut_data/ten_country_lineage_mut.csv
 ```
 
@@ -59,14 +59,21 @@ ten_country_mut_data/*
     - This tsv file has multiple columns. Interesting columns were type and Value. Using the following bash commands the list of GISAID_VOI_VOC_VOMlist.txt was compiled
 
     ```bash
-    awk -F\t '{if($3=="Variant") print $4}' 
-    gisaid_variants_statistics_from_gisaid.tsv | 
+    awk -F\t '{if($3=="Variant") print $4}' \
+    gisaid_variants_statistics_from_gisaid.tsv | \
     sort -u >GISAID_VOI_VOC_VOM_list.txt
     ```
 
     - The resulting text has long lines like _**VOI GRA (EG.5+EG.5.*) first detected in Indonesia/France**_
     from this only the variant and sublineage names EG.5+EG.5.*  are retained while other texts including the brackets are removed.
     - Lines are rearranged in such a way that parental variant comes after the subvariant, example: XBB+XBB.\*    would come only after XBB.1.16+XBB.1.16.*. This rearrangement was done manually.
+
+> There were some inconsistencies in the Date entries (only year no months or year and month an no date) such entries were removed
+> On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in ```Work/Data_Analysis/chosen_ten_country_submission.csv``` excluding few countries.
+> After removing the inconsistent date entries the numbers(downloaded and number in file) for India match.
+> The inconsistencies are reported in the file ```Work/Data_Analysis/inconsistencies_in_data.numbers```
+> The number of downloaded entries are more than then numbers in file
+> After looking into it, it was observed that there were few more entries added to these countries and months in the time gap(around a week) between the compiling ```Work/Data_Analysis/chosen_ten_country_submission.csv``` and downloading data. [[Work_documented.checking inconsistencies]]
 
 ## Frequency computation
   
