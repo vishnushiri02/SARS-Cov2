@@ -2,9 +2,11 @@
 id: v4t96j5kch5mq12272qsyih
 title: Glossary
 desc: ''
-updated: 1700240957152
+updated: 1701963973658
 created: 1700240802023
 ---
+## **Outliers**
+
 ### **Point outlier:**
 
 - A point outlier is a datum that behaves unusual in a specific time instant when compared either to the other values in the time series (global outlier) or to its neighboring points (local outlier).[1]
