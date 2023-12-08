@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1701890592158
+updated: 1702054329317
 created: 1701882355956
 ---
 
@@ -12,21 +12,19 @@ created: 1701882355956
 
 1. XBB.1.16(omicron):India sees the Spike earlier than the rest of the countries. The lowest frequency in india is higher than peaks of all other countries. ![xbb_1_16](assets/plots/XBB_1_16.png)
 
-2. XBB : India records the highest frequency(21%), while other countries have frequnency less than 2% ![xbb](assets/plots/XBB.png)
+2. XBB : India and Germany  records the high frequencies 70.92%,50% respectively, while other countries have frequnency less than 20% ![xbb](assets/plots/XBB.png)
 
-3. XBB : Not observed in Canada
+3. Norway doesn't have occurances of XBB.1.9.2,XBB.1.16 while other countries has recorded occurances.
 
-4. Norway doesn't have occurances of XBB,XBB.1.9.2,XBB.1.16 while other countries has recorded occurances.
+4. EG.5 is more prevalent in Norway and India for two months straight than in other countries ![EG_5](assets/plots/EG.5.png)
 
-5. EG.5 is more prevalent in Norway and India for two months straight than in other countries ![EG_5](assets/plots/EG.5.png)
+5. XBB.1.9.1,EG.5 : Norway records occurances only for two months and it is highest than frequencies of other countries. No gradual increase or decrease recorded. ![xbb_1_9_1](assets/plots/XBB_1_9_1.png)
 
-6. XBB.1.9.1,EG.5 : Norway records occurances only for two months and it is highest than frequencies of other countries. No gradual increase or decrease recorded. ![xbb_1_9_1](assets/plots/XBB_1_9_1.png)
+6. XBB.1.9.1 : not present in Australia
 
-7. XBB.1.9.1 : not present in Australia
+7. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![5_1_1_529](assets/plots/B_1_1_529.png)
 
-8. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![5_1_1_529](assets/plots/B_1_1_529.png)
-
-9.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png)
+8.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png)
 
 
 
@@ -39,6 +37,14 @@ created: 1701882355956
 ![ba_2_86](assests/../assets/plots/BA_2_86.png)
 
 1. No records of the following variants B.1.429(Epsilon), B.1.525(Eta), B.1.526(Iota), C.37(Lambda), B.1.621(Mu), P.3(Theta), P.2(Zeta), B.1.640 in the 10 chosen countries during Jan22-Oct23.
+
+## Interesting plots of lineages not variant
+
+1. BF.7:  Peaks of Denamrk(58.3%) and Germany(29.2%) are notable because no other country has recorded such frequencies for this lineage. And Norway has no trace of this lineage. ![BF_7](assets/plots/BF_7.png)
+2. BN.1: South Korea had high prevelance of this lineage from Dec22-Mar23 >60%. ![BN_1](assets/plots/BN_1.png)
+3. BR.2: Australia has this lineage from Jan22-Jun23 way before and after it's occurances in other countries. However the frequency of this lineage in Australia during Oct22-Mar23 is unmatched by any of the other country. ![BR_2](assets/plots/BR_2.png)
+4. HW.1: Aaustralia has highest frequency of this lineage in the month of Sept23, while other countries have all their frequncies below 20%.And Norway has no trace of this lineage. ![HW_1](assets/plots/HW_1.png)
+   
 
 ## Summary for Variants
 
@@ -138,9 +144,8 @@ created: 1701882355956
 
 ## XBB(omicron)
 
-+ India has the highest frequency(21%) while other countries have frequnency less than 2%
-+ Not observed in Norway and Canada
-+ Longest trend in USA sep22-Aug23 But the highest frequency recorded is 1%
++ India and Germany  records the high frequencies 70.92%,50% respectively, while other countries have frequnency less than 20%
+
 
 B.1.429(Epsilon), B.1.525(Eta), B.1.526(Iota), C.37(Lambda), B.1.621(Mu), P.3(Theta), P.2(Zeta), B.1.640 No data for these variants.
 
