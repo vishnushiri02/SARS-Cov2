@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1702054329317
+updated: 1702283189614
 created: 1701882355956
 ---
 
@@ -31,7 +31,7 @@ created: 1701882355956
 > ## 10. BA.2.86
    >
    > + Occurances only observed in Denmark, Germany,Spain,Uk,USA
-   > + Though the frequency of all the occuraces in all these countries are less than 10%. By the 95% CI Denmark records the highest frequncy (40%) of occurance in the month of Jul23.
+   > + Though the frequency of all the occuraces in all these countries are less than 10%, by the 95% CI Denmark records the highest frequncy (40%) of occurance in the month of Jul23.
    > + Denmark records occurances from Jul23-Sep23, spain and UK records occurances from Sep23-Oct23. Germany,USA records occurances only in oct23 which is very low 0.9% and 0.3%  respectively.
    
 ![ba_2_86](assests/../assets/plots/BA_2_86.png)
