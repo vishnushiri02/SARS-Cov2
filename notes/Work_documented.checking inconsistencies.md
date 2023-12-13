@@ -2,7 +2,7 @@
 id: o7n9flqgbqf3xbm437bc0ih
 title: checking inconsistencies
 desc: 'What was done to know about the inconsistencies'
-updated: 1702042333839
+updated: 1702286538708
 created: 1702040914123
 ---
 
@@ -25,4 +25,3 @@ for(i in names(ten_country_mut_data)){
 - The result of the query neighter matched with the number in the file or with the number got from the snippet. It was higher than both.
 - This it when I realised that entries from older months are uploaded to GISAID anytime. This can be seen through the submission date column in GISAID - Entries with old collection date and recent submission date.
 - So the difference between the numbers in the file and the numbers from downloaded entries could be reasoned out to be the data submitted during the time gaap between compiling the csv file and downloading the data (nearly 1 week).
-
