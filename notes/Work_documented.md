@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1702286121710
+updated: 1702484375734
 created: 1700240700998
 ---
 # Objective
@@ -17,8 +17,8 @@ graph TD;
 ```
 
 - [[Question on date|Work_documented.possible_questions#1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards]]
-
-# Data acquisition
+  
+## Data acquisition
 
 - List of locations available in GISAID was obtained from GISAIDR Git repo - [GISAID_LOCATIONS.txt](https://github.com/Wytamma/GISAIDR/blob/master/GISAID_LOCATIONS.txt)
 - The following points/steps are coded in the file ```Work/Data_Analysis/Monthwise_data_submission.Rmd```
@@ -33,7 +33,7 @@ graph TD;
     > This can be done by ```fix(Download)``` and modifying the script as we need
   - This mutation data are stored in ```Work/Data_Analysis/ten_country_mut_data```
 
-# Mapping lineages
+## Mapping lineages
 
 - Mapping of lineages to their parental lineage is done based on the Pangolin lineage naming string and the spike mutations:
 
@@ -52,8 +52,8 @@ ten_country_mut_data/* \
 - All the following steps are coded in the Rmd file ```Work/Data_Analysis/Lineage_mapping.Rmd```
   - All the mutations pertaining to each of the lineage were combined.
   - From this only the spike mutations were considered for the downstream work.
-  - Jaccard index (intersections of sets/Union of sets). If the Jaccard index is more than 0.5 then the lineages being compared are either considered as parental or neighbour depending on their pangolin string.
-    - The Lineages were mapped to parental lineage based on the the calculated jaaccard index which is based on the number of common spike mutations between pangolinlineages that have same names dropping the last character in the sublineage. VOC/VUM/VOI were explicitely mapped based on the list taken from GISAID.
+  - Jaccard index (intersections of sets/Union of sets). If the Jaccard index is more than 0.5 then the lineages being compared are either considered as parental or neighbour depending on their pangolin string. [[Question on the treshold|Work_documented.possible_questions#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay]]
+    - The Lineages were mapped to parental lineage based on the the calculated jaccard index which is based on the number of common spike mutations between pangolin lineages that have same names dropping the last character in the sublineage. VOC/VUM/VOI were explicitely mapped based on the list taken from GISAID.
   - For Pangolin lineages that are considered as VOI/VUM/VOC, the  mapping is directly given in GISAID. This can be found in the file ```Work/Data_Analysis/GISAID_VOI_VOC_VOM_list.txt```.
     - This list was obtained by first downloading the Clade/Lineage,variants(tsv) from the GISAID Downloads prompt.
     - This tsv file has multiple columns. Interesting columns were type and Value. Using the following bash commands the list of GISAID_VOI_VOC_VOMlist.txt was compiled
@@ -80,6 +80,7 @@ ten_country_mut_data/* \
 - After the lineage mapping, for each country the frequency of presence of each parental_lineage(which also includes the sublienages) in a month was calculated ($$$\frac{count\space of\space lineage\space B\space in\space jul}{total\space entries\space in\space jul}$$$) with confidence interval and plotted. The plots are stored in PDF file, 1 plot for each country so 10 pages - ```Work/Data_Analysis/plots/country_wise_frequency_trend.pdf``` without CI and ```Work/Data_Analysis/plots/country_wise_frequency_trend_CI.pdf``` with CI.
 - To make it more convenient plots for each Parental_lineage/variant grouped by country was plotted to do the analysis. These are present in the pdf files - ```Work/Data_Analysis/plots/Variant_wise_trend_all_countries.pdf``` without CI and ```Work/Data_Analysis/plots/Variant_wise_trend_all_countries_CI.pdf``` with CI
 - These plots are analysed to bring out the difference in the variant trend among countries. An entire spreedsheet was developed manually basically describing the variant trends in words ```Work/Data_Analysis/plot_Analysis_report.numbers```, and the summary of the analysis is in [[Analysing_variant_trends]] file.
-- To not miss on the difference of pandemic in countries the lineages which are not variants were also used for comparison like the variants. There are 300+ plots in the file each page corresponding to one lineage which is not a variants and the data is grouped by country. This is presetn in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise_CI``` with CI and in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise``` without CI
+- To not miss on the difference of pandemic in countries the lineages which are not variants were also used for comparison like the variants. There are 300+ plots in the file each page corresponding to one lineage which is not a variants and the data is grouped by country. This is presetn in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise_CI``` with CI and in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise``` without CI.
+- From these plots trends that look interesting are chosen and noted in [[Analysing_variant_trends]]
 
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)

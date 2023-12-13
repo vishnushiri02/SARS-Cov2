@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1702040857901
+updated: 1702474696671
 created: 1701937898390
 ---
 
@@ -24,5 +24,9 @@ UK|30597|30606
 Canada|20791|20802
 USA|74971|75165
 australia|13257|13261
+
+- ANS:
+  
+### 3. The jaccard index treshold chosen to decide a parent or a neighbour is 50%. Is this okay?
 
 - ANS:
