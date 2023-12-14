@@ -2,7 +2,7 @@
 id: v4t96j5kch5mq12272qsyih
 title: Glossary
 desc: ''
-updated: 1701963973658
+updated: 1702557947177
 created: 1700240802023
 ---
 ## **Outliers**
@@ -25,10 +25,14 @@ created: 1700240802023
     1. Descriptive statistics :
         - **_Finding maximum and minimum_** in the data - for example if the the data is regarding grades of the students and the maximum possible value is 100 but due to mistake if the data has 1000 as maximum value this can be found by retrieveing the range of the data.
         - **_Histogram_** , **_Boxplots_** of the data can be used to visualise the outlier. In Boxplots all the observations beyond the interquartile range criterion($I=[q_{0.25}-1.5.IQR;q_{0.75}+1.5.IQR]$) is considered as outlier.
-        - **_Percentiles_** All the observations that are beyond a percentile of interes is considered as outlier.
-        - **_Z-Scores_** if the data has a normal distribution. Data are categorised as outliers based on their z-score
-        - **_
+        - **_Percentiles_** All the observations that are beyond a percentile of interest is considered as outlier.
+  
     2. Statistical tests : These tests requires the data is normally distributed. This can be checked by either visualsing the data using a histogram or using shapiro-Wilk normality test - shapiro.text().
         - Grubb's test: The Grubbs test allows to detect whether the highest or lowest value in a dataset is an outlier.
         - Dixon's test : Tests if a particular value is outlier or not
-        - Rosner's test: used to detect several outliers as once.
+        - Rosner's test: used to detect several outliers at once.
+        - **_Z-Scores_** if the data has a normal distribution. Data are categorised as outliers based on their z-score
+  
+#### **_Hampler Filter_**
+
+This is also part of descriptive statistics. Considers values outside the interval $I=[median-3*MAD,median+3*MAD]$ as outliers. To understand MAD(median absolute deviation) ![MAD](assets/Pics/MAD.png)
