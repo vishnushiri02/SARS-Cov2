@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1702474696671
+updated: 1702574647492
 created: 1701937898390
 ---
 
@@ -25,8 +25,8 @@ Canada|20791|20802
 USA|74971|75165
 australia|13257|13261
 
-- ANS:
+- ANS: If there is major difference CI wouldn't account for these. In that case we have to either redownload new set of data or we have to jjust specify the date of download in the report
   
 ### 3. The jaccard index treshold chosen to decide a parent or a neighbour is 50%. Is this okay?
 
-- ANS:
+- ANS: Jaccard index is not the right way to go about, we have to get the distance, create a distance table based on the spike mutations.
