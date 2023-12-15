@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1702283189614
+updated: 1702632420887
 created: 1701882355956
 ---
 
@@ -20,11 +20,13 @@ created: 1701882355956
 
 5. XBB.1.9.1,EG.5 : Norway records occurances only for two months and it is highest than frequencies of other countries. No gradual increase or decrease recorded. ![xbb_1_9_1](assets/plots/XBB_1_9_1.png)
 
-6. XBB.1.9.1 : not present in Australia
+> The CI would say how true are these sudden occurances.
 
-7. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![5_1_1_529](assets/plots/B_1_1_529.png)
+1. XBB.1.9.1 : not present in Australia
 
-8.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png)
+2. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![5_1_1_529](assets/plots/B_1_1_529.png)
+
+3.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png)
 
 
 
