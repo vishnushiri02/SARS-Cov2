@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1702632420887
+updated: 1703251479866
 created: 1701882355956
 ---
 
@@ -10,23 +10,25 @@ created: 1701882355956
 
 ## Inference that are interesting
 
-1. XBB.1.16(omicron):India sees the Spike earlier than the rest of the countries. The lowest frequency in india is higher than peaks of all other countries. ![xbb_1_16](assets/plots/XBB_1_16.png)
+1. XBB.1.16(omicron):India sees the Spike earlier than the rest of the countries. The lowest frequency in india is higher than peaks of all other countries. ![xbb_1_16](assets/plots/XBB_1_16.png) ![xbb_1_16_ci](assets/plots/XBB_1_16_CI.png)
 
-2. XBB : India and Germany  records the high frequencies 70.92%,50% respectively, while other countries have frequnency less than 20% ![xbb](assets/plots/XBB.png)
+2. XBB : India and Germany  records the high frequencies 70.92%,50% respectively, while other countries have frequnency less than 20% ![xbb](assets/plots/XBB.png) ![xbb_ci](assets/plots/XBB_CI.png)
 
 3. Norway doesn't have occurances of XBB.1.9.2,XBB.1.16 while other countries has recorded occurances.
 
-4. EG.5 is more prevalent in Norway and India for two months straight than in other countries ![EG_5](assets/plots/EG.5.png)
+4. EG.5 is more prevalent in Norway and India for two months straight than in other countries ![EG_5](assets/plots/EG_5.png) ![EG_5_CI](assets/plots/EG_5_CI.png)
 
-5. XBB.1.9.1,EG.5 : Norway records occurances only for two months and it is highest than frequencies of other countries. No gradual increase or decrease recorded. ![xbb_1_9_1](assets/plots/XBB_1_9_1.png)
+5. XBB.1.9.1,EG.5 : Norway records occurances only for two months and it is highest than frequencies of other countries. No gradual increase or decrease recorded. ![xbb_1_9_1](assets/plots/XBB_1_9_1.png) ![xbbb_1_9_1_ci](assets/plots/XBB_1_9_1_CI.png)
 
 > The CI would say how true are these sudden occurances.
 
-1. XBB.1.9.1 : not present in Australia
+6. XBB.1.9.1 : not present in Australia
 
-2. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![5_1_1_529](assets/plots/B_1_1_529.png)
+7. B.1.1.529(Omicron): The Final spike after a downhill trend during the last month of occurance(jun23) in Norway(66.66%) and Germany(16%) can be interesting. ![B_1_1_529](assets/plots/B_1_1_529.png) ![B_1_1_529_CI](assets/plots/B_1_1_529_CI.png)
 
-3.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png)
+8.  CH.1.1: Norway records high frequencies (61%) compared to other countries. ![CH_1_1](assets/plots/CH_1_1.png) ![CH_1_1_CI](assets/plots/CH_1_1_CI.png)
+
+9. XBB.2.3:   Starts in Jan23 in India and is continuous till May23. There is a break of 3 months Jun23,Jul23,Aug23. Then there is a spike(highest frequency) in the month of Sept23-Oct23.(intereseting), while in other countries the trend is monotonous.![XBB_2_3](assets/plots/XBB_2_3.png) ![XBB_2_3_CI](assets/plots/XBB_2_3_CI.png)
 
 
 
@@ -36,16 +38,29 @@ created: 1701882355956
    > + Though the frequency of all the occuraces in all these countries are less than 10%, by the 95% CI Denmark records the highest frequncy (40%) of occurance in the month of Jul23.
    > + Denmark records occurances from Jul23-Sep23, spain and UK records occurances from Sep23-Oct23. Germany,USA records occurances only in oct23 which is very low 0.9% and 0.3%  respectively.
    
-![ba_2_86](assests/../assets/plots/BA_2_86.png)
+![ba_2_86](assets/plots/BA_2_86.png)
 
 1. No records of the following variants B.1.429(Epsilon), B.1.525(Eta), B.1.526(Iota), C.37(Lambda), B.1.621(Mu), P.3(Theta), P.2(Zeta), B.1.640 in the 10 chosen countries during Jan22-Oct23.
 
 ## Interesting plots of lineages not variant
 
-1. BF.7:  Peaks of Denamrk(58.3%) and Germany(29.2%) are notable because no other country has recorded such frequencies for this lineage. And Norway has no trace of this lineage. ![BF_7](assets/plots/BF_7.png)
-2. BN.1: South Korea had high prevelance of this lineage from Dec22-Mar23 >60%. ![BN_1](assets/plots/BN_1.png)
-3. BR.2: Australia has this lineage from Jan22-Jun23 way before and after it's occurances in other countries. However the frequency of this lineage in Australia during Oct22-Mar23 is unmatched by any of the other country. ![BR_2](assets/plots/BR_2.png)
-4. HW.1: Aaustralia has highest frequency of this lineage in the month of Sept23, while other countries have all their frequncies below 20%.And Norway has no trace of this lineage. ![HW_1](assets/plots/HW_1.png)
+1. BF.7:  Peaks of Denamrk around 30% and Germany 15% are notable because no other country has recorded such frequencies for this lineage - they are less than 5%. And Norway has no trace of this lineage. ![BF_7](assets/plots/BF_7.png)
+2. HW.1: Aaustralia has highest frequency of this lineage in the month of Sept23 - above 50%, while other countries have all their frequncies below 10%. South Koreaa and USA are the other two countries which have meager occurances of this ineage other 7 countries have no trace of this lineage. ![HW_1](assets/plots/HW_1.png)
+3. XBF: Australia and Canada records highest frequency - around 30%-35% while other countries have frequencies less than 20%. Australia records long period exposure this lineage. ![XBF](assets/plots/XBF.png)
+4. XBK: Denmark records the highest occurance of this lineage in Jun23 - more than 30% while other countries record frequencies less than 10%. India has reported no cases from this lineage. ![XBK](assets/plots/XBK.png)
+5. XBC.1.6: Australia records the highest frequency which is around 30% and the occurance in Australia is for a long period May23-Oct23. Minimal occurances are  found in South korea, Canada, UK, USA. ![XBC_1_6](assets/plots/XBC_1_6.png)
+6. XBC.1.3: Australia has long season (Nov22-Oct23) of this lineage and also records the highest frequency - more than 20%. ![XBC_1_3](assets/plots/XBC_1_3.png)
+7. FL.10: Germany records the highest frequecy of 50% for a month in May23 while other countries have frequencies less than 5%. ![FL_10](/assets/plots/FL_10.png)
+8.  GE.1: India Records frequency of more than 30% in Jun23 while other countries have frequencies less than 10%. Uk has the prolonged season of this variant with minimal occurance.![GE_1](assets/plots/GE_1.png)
+9.  DV.x: Norway records the highest frequency of this lineage in Jun23 which is more than 30% while most countries record frequencies around 10%. Denmark has the longesst season of this lineage. Jan23-Oct23.![DV_x](assets/plots/DV_x.png)
+10. BL.1: India records the longest season with this lineage - Jun22-Jun23 and has the hoghest frequency in Jun23 (more than 30%). It should be noted that there are no occurances in the months Jan23-May23. ![BL.1](assets/plots/BL_1.png)
+11. BQ.1.1: Spain has the longest season of this lineage with the highest frequency going upto more than 40%. ![BQ_1_1](assets/plots/BQ_1_1.png)
+12. BR.2.1: Australia has the longest season(Jan22-Jun23) of this lineage with the highest frequency going around 40%. Feb22-Sep22 there are no occurances recorded. ![BR_2_1](assets/plots/BR_2_1.png)
+13. BY.1: Australia has the longest season with this lineage but with meager frequency. Canada has recorded the highest frequency in month Nov22 which is more than 30%. ![BY_1](assets/plots/BY_1.png)
+14. BR.1: Norway records highest frequency of this lineage which is more than 20% in the month of Sep22. ![BR_1](assets/plots/BR_1.png)
+15. GL.1: Australia records the highest frequency in Aug23 (more than 30%). ![GL_1](assets/plots/GL_1.png)
+16. EG.1.x: Germany has the highest frequency recorded 25% in Jul23. Frequencies in other countries are less than 5%. ![EG_1_x](assets/plots/EG_1_x.png)
+17. FK.1.x: Denmark records the highest frequency in May23 and South Korea has the longest season with htis lineage (May23-Oct23). ![FK_1_x](assets/plots/FK_1_x.png)
    
 
 ## Summary for Variants
