@@ -2,7 +2,7 @@
 id: vhn93xdheb909udqychwrcl
 title: Mapping_lineages
 desc: 'This note describes the algorithm of mapping lineage'
-updated: 1702483208828
+updated: 1703594678282
 created: 1702286483115
 ---
 ```{Algorithm}
@@ -65,7 +65,7 @@ Function mapping_lineages (lineage_cmut,alias_df)
         combined (union) and stored in the place of 
         mutations of the parental lineage in temp_df. Neighbours are 
         mapped to their found parent and are stored in alias_df_temp, 
-        since there is potential for surther mapping. This parertal 
+        since there is potential for surther mapping. This parental 
         lineage also becomes the parental lineage for the 
         sublineages that had these neighbours as parental 
         lineage in alias_df_temp.These neighbors are removed from 
@@ -128,16 +128,16 @@ End
 ```
 
 ```{Algorithm}
-Function find_jaccard(pat,search_df,P=False)
+Function find_jaccard(pat,search_df,pat_mutations=0)
 
     search_lineage_loc<-grep(pat,search_df$lineage)
 
-    1. If P=false means the function is finding the
-    neighbours. If the P=True the function is overloaded
+    1. If pat_mutations==0 means the function is finding the
+    neighbours. Else the function is overloaded
     to find the parental lineage.
 
-    2. If P=False the length(search_lineage_loc) should be
-    more than 1
+    2. If pat_mutations==0 the length(search_lineage_loc) should be
+    more than 1 - neighbours other than the lineage in hand.
 
     3. If no neighbours were found then function returns 
     neighbours="0", jaccard_value=-1,neighbour_loc=0
