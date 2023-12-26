@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1703068525109
+updated: 1703595160180
 created: 1700240700998
 ---
 # Objective
@@ -52,8 +52,8 @@ ten_country_mut_data/* \
 - All the following steps are coded in the Rmd file ```Work/Data_Analysis/Lineage_mapping.Rmd```
   - All the mutations pertaining to each of the lineage were combined.
   - From this only the spike mutations were considered for the downstream work.
-  - Jaccard index (intersections of sets/Union of sets). If the Jaccard index is more than 0.5 then the lineages being compared are either considered as parental or neighbour depending on their pangolin string. [[Question on the treshold|Work_documented.possible_questions#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay]]
-    - The Lineages were mapped to parental lineage based on the the calculated jaccard index which is based on the number of common spike mutations between pangolin lineages that have same names dropping the last character in the sublineage. VOC/VUM/VOI were explicitely mapped based on the list taken from GISAID.
+  - Jaccard index (intersections of sets/Union of sets). If the Jaccard value calculated  is less than 0.5 then the lineages being compared are either considered as parental or neighbour depending on their pangolin string. [[Question on the treshold|Work_documented.possible_questions#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay]]
+    - The Lineages were mapped to parental lineage based on the the calculated jaccard value which is based on the number of common spike mutations between pangolin lineages that have same names dropping the last character in the sublineage. VOC/VUM/VOI were explicitely mapped based on the list taken from GISAID.
   - For Pangolin lineages that are considered as VOI/VUM/VOC, the  mapping is directly given in GISAID. This can be found in the file ```Work/Data_Analysis/GISAID_VOI_VOC_VOM_list.txt```.
     - This list was obtained by first downloading the Clade/Lineage,variants(tsv) from the GISAID Downloads prompt.
     - This tsv file has multiple columns. Interesting columns were type and Value. Using the following bash commands the list of GISAID_VOI_VOC_VOMlist.txt was compiled
@@ -68,6 +68,9 @@ ten_country_mut_data/* \
     from this only the variant and sublineage names EG.5+EG.5.*  are retained while other texts including the brackets are removed(manually).
     - Lines are rearranged in such a way that parental variant comes after the subvariant, example: XBB+XBB.\*    would come only after XBB.1.16+XBB.1.16.*. This rearrangement was done manually.
   ![mapping lineages idea](assets/Pics/Mapping_lineage_idea.png)
+  - In total there are 1628 unique lingeages which includes variants also. Runnin the mapping algorithm on this gives 715 lineages mapped to 16 variants and 913 lineages getting mapped to 531 lineages which includes Unknown.
+  
+  > If muation list obtained using the outbreakinfo function getMutationsByLineage then the results vary for the non-variant lineages. 912(without unknown) lineages gets mapped to 676 lineages.
 
 > There were some inconsistencies in the Date entries (only year no months or year and month an no date) such entries were removed.
 > On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in ```Work/Data_Analysis/chosen_ten_country_submission.csv``` excluding few countries.
