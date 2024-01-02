@@ -1,0 +1,123 @@
+<h1 id="work_documented">Work_documented<a aria-hidden="true" class="anchor-heading icon-link" href="#work_documented"></a></h1>
+<h1 id="objective">Objective<a aria-hidden="true" class="anchor-heading icon-link" href="#objective"></a></h1>
+<p>The study is regarding the role of population genetics in the determining the susceptibility to a SARS CoV19 variant.</p>
+<h2 id="steps-in-the-workflow">Steps in the workflow<a aria-hidden="true" class="anchor-heading icon-link" href="#steps-in-the-workflow"></a></h2>
+<div class="mermaid">
+  graph TD;
+1[start]--Based on data quantity-->A[Choosing countries for the study]--checking for extreme low value outliers-->B[Downloading sequence and meta data from these countries for 22 months]--Mapping lineages to parental lineage-->C[Finding the difference in the trend of variant frequencies in these countries]
+</div>
+<ul>
+<li><a href="/SARS-Cov2/notes/xhw6w5ghbjhkzbo7huxzhwg#1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards">Question on date</a></li>
+</ul>
+<h2 id="data-acquisition">Data acquisition<a aria-hidden="true" class="anchor-heading icon-link" href="#data-acquisition"></a></h2>
+<ul>
+<li>List of locations available in GISAID was obtained from GISAIDR Git repo - <a href="https://github.com/Wytamma/GISAIDR/blob/master/GISAID_LOCATIONS.txt">GISAID_LOCATIONS.txt</a></li>
+<li>The following points/steps are coded in the file <code>Work/Data_Analysis/Monthwise_data_submission.Rmd</code>
+<ul>
+<li>From the GISAID, the total number of <strong><em>high</em></strong>, <strong><em>coverge</em></strong> completed sequence deposited by each country (200+) in the past 22 months(Jan2022-Oct2023) were retrieved in a month wise fasion using the R Package GISAIDR. The table is in <code>Work/Data_Analysis/country_monthly_submission.csv</code></li>
+<li>Countries that had more than 10,000 sequences deposited in total in the past 22 months were alone considered further.</li>
+<li>This included 10 countries : India, South Korea, Denmark, Germany, Norway, Spain, United Kingdom, Canada, USA, Australia. <code>Work/Data_Analysis/chosen_ten_country_submission.csv</code></li>
+<li>The trend of the time series data of these countries were plotted. It is present in the file <code>Work/Data_Analysis/plots/ten_Country_data_trend_plots.pdf</code>
+<img src="/SARS-Cov2/assets/plots/Country_trend_plots.png" alt="Trends in 10 countries"></li>
+<li>Outlier detection and pruning of the observation horizon(Time period considered): Extreme low values were searched for, using the <a href="/SARS-Cov2/notes/v4t96j5kch5mq12272qsyih#hampler-filter">Hampler Filter</a> (one of the <a href="/SARS-Cov2/notes/v4t96j5kch5mq12272qsyih#outlier-estimation-and-methods">Outlier Estimation and methods</a>). outliers_mad from Routliers package was used . Since there were no extreme low values found in any of the countries, the observation time period was not pruned.</li>
+<li>The sequence data for 10 countries were downloaded. There are files with crude data - all data retrieved from GISAID for each of the accesssion ID (29 cols of data) and there are files with essential columns: strain,virus,collection_date,country,pangolineage,sequence, length of the sequence, GISAID accession_id. The crude data for 10 countries are present 10 files in the folder <code>Work/Data_Analysis/ten_country_crude_data_seq</code> and the essential column files are in the folder <code>Work/Data_Analysis/ten_country_ess_data</code></li>
+<li>The Rmd also has a codeblock for downloading data with AA_substitution. This data was needed for mapping lineages to their parental lineage. For this I used the modified download script(modified by me) <code>Work/Data_Analysis/Modified_GISAIDRdownload.R</code>.
+<blockquote>
+<p>This can be done by <code>fix(Download)</code> and modifying the script as we need</p>
+</blockquote>
+</li>
+<li>This mutation data are stored in <code>Work/Data_Analysis/ten_country_mut_data</code></li>
+</ul>
+</li>
+</ul>
+<h2 id="mapping-lineages">Mapping lineages<a aria-hidden="true" class="anchor-heading icon-link" href="#mapping-lineages"></a></h2>
+<ul>
+<li>
+<p>Mapping of lineages to their parental lineage is done based on the Pangolin lineage naming string and the spike mutations:</p>
+<ul>
+<li>From the 10 files of <code>Work/Data_Analysis/ten_country_mut_data</code> the columns corresponding to the mutations and pango lineage were extracted and stored in a different file <code>Work/Data_Analysis/ten_country_mut_data/ten_country_lineage_mut.csv</code>.
+This is done using awk command</li>
+</ul>
+</li>
+</ul>
+<pre class="language-bash"><code class="language-Bash"><span class="token function">awk</span> -F<span class="token string">";"</span> <span class="token string">'{gsub(/[()]/,"",$6);print $5";"$6}'</span> 
+ten_country_mut_data/* <span class="token punctuation">\</span>
+<span class="token operator">></span>ten_country_mut_data/ten_country_lineage_mut.csv
+</code></pre>
+<blockquote>
+<p>gsub is used to remove the brackets in the AA_mutations column.<br>
+Columns of the CSV files are separated by a semicolon ';'</p>
+</blockquote>
+<ul>
+<li>
+<p>All the following steps are coded in the Rmd file <code>Work/Data_Analysis/Lineage_mapping.Rmd</code></p>
+<ul>
+<li>
+<p>All the mutations pertaining to each of the lineage were combined.</p>
+</li>
+<li>
+<p>From this only the spike mutations were considered for the downstream work.</p>
+</li>
+<li>
+<p>Jaccard index (intersections of sets/Union of sets). If the Jaccard value calculated  is less than 0.5 then the lineages being compared are either considered as parental or neighbour depending on their pangolin string. <a href="/SARS-Cov2/notes/xhw6w5ghbjhkzbo7huxzhwg#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay">Question on the treshold</a></p>
+<ul>
+<li>The Lineages were mapped to parental lineage based on the the calculated jaccard value which is based on the number of common spike mutations between pangolin lineages that have same names dropping the last character in the sublineage. VOC/VUM/VOI were explicitely mapped based on the list taken from GISAID.</li>
+</ul>
+</li>
+<li>
+<p>For Pangolin lineages that are considered as VOI/VUM/VOC, the  mapping is directly given in GISAID. This can be found in the file <code>Work/Data_Analysis/GISAID_VOI_VOC_VOM_list.txt</code>.</p>
+<ul>
+<li>
+<p>This list was obtained by first downloading the Clade/Lineage,variants(tsv) from the GISAID Downloads prompt.</p>
+</li>
+<li>
+<p>This tsv file has multiple columns. Interesting columns were type and Value. Using the following bash commands the list of GISAID_VOI_VOC_VOMlist.txt was compiled</p>
+<pre class="language-bash"><code class="language-bash"><span class="token function">awk</span> -F<span class="token punctuation">\</span>t <span class="token string">'{if($3=="Variant") print $4}'</span> <span class="token punctuation">\</span>
+gisaid_variants_statistics_from_gisaid.tsv <span class="token operator">|</span> <span class="token punctuation">\</span>
+<span class="token function">sort</span> -u <span class="token operator">></span>GISAID_VOI_VOC_VOM_list.txt
+</code></pre>
+</li>
+<li>
+<p>The resulting text has long lines like <em><strong>VOI GRA (EG.5+EG.5.*) first detected in Indonesia/France</strong></em>
+from this only the variant and sublineage names EG.5+EG.5.*  are retained while other texts including the brackets are removed(manually).</p>
+</li>
+<li>
+<p>Lines are rearranged in such a way that parental variant comes after the subvariant, example: XBB+XBB.*    would come only after XBB.1.16+XBB.1.16.*. This rearrangement was done manually.
+<img src="/SARS-Cov2/assets/Pics/Mapping_lineage_idea.png" alt="mapping lineages idea"></p>
+</li>
+</ul>
+</li>
+<li>
+<p>In total there are 1628 unique lingeages which includes variants also. Running the mapping algorithm on this gives 715 lineages mapped to 16 variants and 913 lineages getting mapped to 531 lineages which includes Unknown.</p>
+</li>
+</ul>
+<blockquote>
+<p>If muation list is obtained using the outbreakinfo function getMutationsByLineage then the results vary for the non-variant lineages. 912(without unknown) lineages gets mapped to 676 lineages. This is present in assigning_the_unassigned.RMD</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>There were some inconsistencies in the Date entries (only year no months or year and month an no date) such entries were removed.
+On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in <code>Work/Data_Analysis/chosen_ten_country_submission.csv</code> excluding few countries.
+After removing the inconsistent date entries the numbers(downloaded and number in file) for India match.
+The inconsistencies are reported in the file <code>Work/Data_Analysis/inconsistencies_in_data.numbers</code>.
+The number of downloaded entries are more than then numbers in file.
+After looking into it, it was observed that there were few more entries added to these countries and months in the time gap(around a week) between the compiling <code>Work/Data_Analysis/chosen_ten_country_submission.csv</code> and downloading data. <a href="/SARS-Cov2/notes/o7n9flqgbqf3xbm437bc0ih">checking inconsistencies</a></p>
+</blockquote>
+<h2 id="frequency-computation">Frequency computation<a aria-hidden="true" class="anchor-heading icon-link" href="#frequency-computation"></a></h2>
+<ul>
+<li>After the lineage mapping, for each country the frequency of presence of each parental_lineage(which also includes the sublienages) in a month was calculated (<span class="math math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>c</mi><mi>o</mi><mi>u</mi><mi>n</mi><mi>t</mi><mtext> </mtext><mi>o</mi><mi>f</mi><mtext> </mtext><mi>l</mi><mi>i</mi><mi>n</mi><mi>e</mi><mi>a</mi><mi>g</mi><mi>e</mi><mtext> </mtext><mi>B</mi><mtext> </mtext><mi>i</mi><mi>n</mi><mtext> </mtext><mi>j</mi><mi>u</mi><mi>l</mi></mrow><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi><mtext> </mtext><mi>e</mi><mi>n</mi><mi>t</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mtext> </mtext><mi>i</mi><mi>n</mi><mtext> </mtext><mi>j</mi><mi>u</mi><mi>l</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">\frac{count\space of\space lineage\space B\space in\space jul}{total\space entries\space in\space jul}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.4133em;vertical-align:-0.4811em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9322em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span><span class="mord mathnormal mtight" style="margin-right:0.02778em;">r</span><span class="mord mathnormal mtight">i</span><span class="mord mathnormal mtight">es</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight">in</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.4461em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">co</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">t</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">in</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">e</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight">in</span><span class="mspace mtight"><span class="mtight"> </span></span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mord mathnormal mtight">u</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.4811em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span>) with confidence interval and plotted.MultinomCI from DescTools package is used to compute the simultaneous <a href="/SARS-Cov2/notes/v4t96j5kch5mq12272qsyih#confidence-interval">Confidence interval</a>. This function also calculates frequency/proportion so a seperate computation was not required.95% confidence interval with method sisonglaz was computed. The plots are stored in PDF file, 1 plot for each country so 10 pages - <code>Work/Data_Analysis/plots/country_wise_frequency_trend.pdf</code> without CI and <code>Work/Data_Analysis/plots/country_wise_frequency_trend_CI.pdf</code> with CI.</li>
+<li>To make it more convenient plots for each Parental_lineage/variant grouped by country was plotted to do the analysis. These are present in the pdf files - <code>Work/Data_Analysis/plots/Variant_wise_trend_all_countries.pdf</code> without CI and <code>Work/Data_Analysis/plots/Variant_wise_trend_all_countries_CI.pdf</code> with CI</li>
+<li>These plots are analysed to bring out the difference in the variant trend among countries. An entire spreedsheet was developed manually basically describing the variant trends in words <code>Work/Data_Analysis/plot_Analysis_report.numbers</code>, and the summary of the analysis is in <a href="/SARS-Cov2/notes/1hnn8maoednnxdw5feqd4kq">Analysis of the varient trend plots</a> file.</li>
+<li>To not miss on the difference of pandemic in countries the lineages which are not variants were also used for comparison like the variants. There are 300+ plots in the file each page corresponding to one lineage which is not a variants and the data is grouped by country. This is presetn in <code>Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise_CI</code> with CI and in <code>Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise</code> without CI.</li>
+<li>From these plots trends that look interesting are chosen and noted in <a href="/SARS-Cov2/notes/1hnn8maoednnxdw5feqd4kq">Analysis of the varient trend plots</a></li>
+</ul>
+<p><a href="https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html">Definition Reference</a>
+s</p>
+<hr>
+<strong>Children</strong>
+<ol>
+<li><a href="/SARS-Cov2/notes/vhn93xdheb909udqychwrcl">Mapping_lineages</a></li>
+<li><a href="/SARS-Cov2/notes/xhw6w5ghbjhkzbo7huxzhwg">Possible_questions</a></li>
+<li><a href="/SARS-Cov2/notes/o7n9flqgbqf3xbm437bc0ih">checking inconsistencies</a></li>
+</ol>
