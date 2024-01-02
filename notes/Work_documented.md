@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1703595160180
+updated: 1704200771592
 created: 1700240700998
 ---
 # Objective
@@ -68,9 +68,9 @@ ten_country_mut_data/* \
     from this only the variant and sublineage names EG.5+EG.5.*  are retained while other texts including the brackets are removed(manually).
     - Lines are rearranged in such a way that parental variant comes after the subvariant, example: XBB+XBB.\*    would come only after XBB.1.16+XBB.1.16.*. This rearrangement was done manually.
   ![mapping lineages idea](assets/Pics/Mapping_lineage_idea.png)
-  - In total there are 1628 unique lingeages which includes variants also. Runnin the mapping algorithm on this gives 715 lineages mapped to 16 variants and 913 lineages getting mapped to 531 lineages which includes Unknown.
+  - In total there are 1628 unique lingeages which includes variants also. Running the mapping algorithm on this gives 715 lineages mapped to 16 variants and 913 lineages getting mapped to 531 lineages which includes Unknown.
   
-  > If muation list obtained using the outbreakinfo function getMutationsByLineage then the results vary for the non-variant lineages. 912(without unknown) lineages gets mapped to 676 lineages.
+  > If muation list is obtained using the outbreakinfo function getMutationsByLineage then the results vary for the non-variant lineages. 912(without unknown) lineages gets mapped to 676 lineages. This is present in assigning_the_unassigned.RMD
 
 > There were some inconsistencies in the Date entries (only year no months or year and month an no date) such entries were removed.
 > On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in ```Work/Data_Analysis/chosen_ten_country_submission.csv``` excluding few countries.
@@ -89,3 +89,4 @@ ten_country_mut_data/* \
 - From these plots trends that look interesting are chosen and noted in [[Analysing_variant_trends]]
 
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
+s
