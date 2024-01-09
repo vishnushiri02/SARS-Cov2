@@ -1,8 +1,8 @@
 ---
 id: v4t96j5kch5mq12272qsyih
 title: Glossary
-desc: ''
-updated: 1703068470426
+desc: 'Some terms that has been used'
+updated: 1704797024469
 created: 1700240802023
 ---
 ## **Outliers**
@@ -14,8 +14,6 @@ created: 1700240802023
 ### **Subsequences:**
 
 - This term refers to consecutive points in time whose joint behavior is unusual, although each observation individually is not necessarily a point outlier.[1]
-
-
 
 ### **Outlier Estimation and methods:**
 
@@ -39,18 +37,23 @@ This is also part of descriptive statistics. Considers values outside the interv
 
 ## Confidence interval
 
-In general a 95% confidence interval means there is 95% probability that the confidence interval contains the mean[2]. To understand what is CI of a sample proportion, the term population proportion is defined first.
+In general a 95% confidence interval means there is 95% probability that the confidence interval contains the mean.[2] To understand what is CI of a sample proportion, the term population proportion is defined first.
 
-> A population proportion is the proportion of individuals in a population sharing a certain trait, denoted as p. The sample proportion is the proportion of individuals in a sample sharing a certain trait, denoted ˆp[3].
+> A population proportion is the proportion of individuals in a population sharing a certain trait, denoted as p. The sample proportion is the proportion of individuals in a sample sharing a certain trait, denoted ˆp.[3]
 
 Just like the estimating the CI of mean the CI of proportion is estimated by adding and subtracting margin of error from ^p to get the limits of CI.
 $$$\\
 Margin\space of\space Error\space =z\times\sqrt{\frac{\hat p\times(1-\hat p)}{n}}
 $$$
-Where z is the z-score for 95% confidence level[4].
+Where z is the z-score for 95% confidence level.[4]
 For multinomial sample prortions the confidence intervals are often approximated by single binomial confidence interval, I assume the trait of iterest is considered as $\hat p$ while others become $(1-\hat p)$. There are also methods to to calculate confidence interval simultaneously. One such method sisonglaz was used in the work through function MultinomCI from DescTools package.
+
+## Interpolation
+
+Finding a new datapoint based on the preexisting data point is called the interpolation. Common methods of interpolation includes linear,polynomial, spline interpolation. Linear interpolation fits a stright line between known points and uses the slope off the line to interpolate the missing data points. In both polynomial and spline interpolation polynomials are used to do the interpolation. The difference is that spline fits multiple piecewise polynomials to the subset of data to do the interpolation, on the other hand polynomial interpolation fits one polynomial to the entire data to do the interpolation.[5]
 
 [1]:<https://s-ai-f.github.io/Time-Series/outlier-detection-in-time-series.html>
 [2]:<https://www.graphpad.com/guides/prism/latest/statistics/stat_more_about_confidence_interval.htm>
 [3]:<https://faculty.etsu.edu/gardnerr/1080/stat4-3.pdf>
 [4]:<https://ecampusontario.pressbooks.pub/introstats/chapter/7-4-confidence-intervals-for-a-population-proportion/#:~:text=Similar%20to%20confidence%20intervals%20for,limits%20of%20the%20confidence%20interval.>
+[5]:<https://www.techtarget.com/whatis/definition/extrapolation-and-interpolation>
