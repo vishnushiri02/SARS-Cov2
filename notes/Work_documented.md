@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1704805630183
+updated: 1704809366733
 created: 1700240700998
 ---
 # Objective
@@ -87,6 +87,25 @@ ten_country_mut_data/* \
 - To not miss on the difference of pandemic in countries the lineages which are not variants were also used for comparison like the variants. There are 300+ plots in the file each page corresponding to one lineage which is not a variants and the data is grouped by country. This is presetn in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise_CI``` with CI and in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise``` without CI.
 - From these plots trends that look interesting are chosen and noted in [[Analysing_variant_trends]]
 
+## Dealing with the unassigned
+
+- For few entries of the GISAID downloaded data the lineage was not assigned. The lineage column had either a blank space or it was termed as unassigned. There were in total 91 unassigned entries in the downloaded 10 country data.
+- Denmark 7 entries ,UK 74 entries, USA 5 entries, Australia 5 which is Denmark 0.004%, UK 0.242%, USA 0.007%, Australia 0.038% of the entries in the respective countries.
+- Majority of the unassigned entries were collected in Oct23
+- To get the possible assignment for these entries few methods were tried out.
+- First among them was to calculate distance between the unassigned and all other lineages based on their spike mutations. For this process the characteristics mutation for each lineage was obtained using the outbreakinfo function *__getMutationsByLineage__*. Lineages that had less distance to each of the unassigned entries were considered as possible assignment.
+- Though this method seems to work when the method was checked with entries with known assignments, the method did not perform well.
+- The main reason that this wouldn't work is beacuse not all the characteristic spike mutation is always present in the GISAID downloaded data, so when distance is computed there is always discrepencies.
+- Hence to go with an accurate method genome sequences of these unassigned entries were obtained and a fasta file was compiled.
+- This file ```unassigned_sequences.fasta``` was uploaded in the <https://pangolin.cog-uk.io> to get the assignment.
+- Once the assignment was obtained it was added to the dataset. This part is included in the fill_parental function of lineage_mapping. The trends were reanalysed after assigning the unassigned.
+  > The <https://pangolin.cog-uk.io> was not able to analyse the 5 sequences from australia. No reasons was provided.
+
+![pangolin_assignment](assets/Pics/pangolin_assignment_analysis.png)
+
+![pangolin_assignemt_details](assets/Pics/pangolin_assignment.png)
+- All these are present in the ```Work/Data_Analysis/assigning_the_unassigned.Rmd```
+
 ## Finding positions under pressure (BIG GOAL)
 
 The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530) in the aa_substitution has to be first calculated and interpolated to get the daily data.
@@ -96,7 +115,7 @@ The big goal is to find the positions under pressure. To obtain this, firstly th
 - This data consist of the lineage, collected date, location of collection, a string of aa_substitution.
 - All the aa_substitution strings that are collected on the same day are considered together. This also gives the number of entries collected in a day = number sequences
 - From these strings the spike RBD mutations are alone extracted using getRBDmut function.
-- The data frame gets reducted to date,number of sequences,spike RBD mutations string.
+- The data frame gets reduced to date,number of sequences,spike RBD mutations string.
 - To calculate the frequency for a time step all the possible unique spike RBD mutations present in the country is first compiled.
 - Then the frequency of each of this mutation for a day is calculated.
   > Frequency of pos_373 on 01-01-2022 = $\frac{count\space of\space pos\_373\space on\space 01-01-2022}{Number\space of\space sequences\space on\space 01-01-2022}$
