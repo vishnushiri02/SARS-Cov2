@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1702574647492
+updated: 1704790620012
 created: 1701937898390
 ---
 
@@ -30,3 +30,15 @@ australia|13257|13261
 ### 3. The jaccard index treshold chosen to decide a parent or a neighbour is 50%. Is this okay?
 
 - ANS: Jaccard index is not the right way to go about, we have to get the distance, create a distance table based on the spike mutations.
+
+### 4. Where could combining the data on daily basis and then interpolating them to get the missing day data go wrong?
+
+-ANS:
+
+### 5. If data is combined weekly, how should this frequency be distributed among the week to get the week-daily interpolation?
+
+-ANS:
+
+### 6. Why do we do linear interpolation, why not spline interpolation?
+
+-ANS:

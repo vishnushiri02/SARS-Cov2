@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1704200771592
+updated: 1704805630183
 created: 1700240700998
 ---
 # Objective
@@ -79,7 +79,6 @@ ten_country_mut_data/* \
 > The number of downloaded entries are more than then numbers in file.
 > After looking into it, it was observed that there were few more entries added to these countries and months in the time gap(around a week) between the compiling ```Work/Data_Analysis/chosen_ten_country_submission.csv``` and downloading data. [[Work_documented.checking inconsistencies]]
 
-
 ## Frequency computation
   
 - After the lineage mapping, for each country the frequency of presence of each parental_lineage(which also includes the sublienages) in a month was calculated ($\frac{count\space of\space lineage\space B\space in\space jul}{total\space entries\space in\space jul}$) with confidence interval and plotted.MultinomCI from DescTools package is used to compute the simultaneous [[Confidence interval|Glossary#confidence-interval]]. This function also calculates frequency/proportion so a seperate computation was not required.95% confidence interval with method sisonglaz was computed. The plots are stored in PDF file, 1 plot for each country so 10 pages - ```Work/Data_Analysis/plots/country_wise_frequency_trend.pdf``` without CI and ```Work/Data_Analysis/plots/country_wise_frequency_trend_CI.pdf``` with CI.
@@ -88,5 +87,25 @@ ten_country_mut_data/* \
 - To not miss on the difference of pandemic in countries the lineages which are not variants were also used for comparison like the variants. There are 300+ plots in the file each page corresponding to one lineage which is not a variants and the data is grouped by country. This is presetn in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise_CI``` with CI and in ```Work/Data_Analysis/plots/Lineages_no_var_freq_countrywise``` without CI.
 - From these plots trends that look interesting are chosen and noted in [[Analysing_variant_trends]]
 
+## Finding positions under pressure (BIG GOAL)
+
+The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530) in the aa_substitution has to be first calculated and interpolated to get the daily data.
+![frequency interpolation](assets/Pics/Frequency_interpolation.png)
+
+- For Each country the mutation data from GISAID has been used as the input.
+- This data consist of the lineage, collected date, location of collection, a string of aa_substitution.
+- All the aa_substitution strings that are collected on the same day are considered together. This also gives the number of entries collected in a day = number sequences
+- From these strings the spike RBD mutations are alone extracted using getRBDmut function.
+- The data frame gets reducted to date,number of sequences,spike RBD mutations string.
+- To calculate the frequency for a time step all the possible unique spike RBD mutations present in the country is first compiled.
+- Then the frequency of each of this mutation for a day is calculated.
+  > Frequency of pos_373 on 01-01-2022 = $\frac{count\space of\space pos\_373\space on\space 01-01-2022}{Number\space of\space sequences\space on\space 01-01-2022}$
+- To have the frequency data for everyday from Jan 1 2022 - Oct 31 2023, linear [[interpolation|Glossary#interpolation]] is done using the approximate method. The result of the interpolation is added to the corresponding date in the country data_frame.
+  
+>- [[Question on combining daywise|Work_documented.possible_questions#4-where-could-combining-the-data-on-daily-basis-and-then-interpolating-them-to-get-the-missing-day-data-go-wrong]]
+>- [[Question on week-day interpolation|Work_documented.possible_questions#5-if-data-is-combined-weekly-how-should-this-frequency-be-distributed-among-the-week-to-get-the-week-daily-interpolation]]
+>- [[Question on the interpolation method|Work_documented.possible_questions#6-why-do-we-do-linear-interpolation-why-not-spline-interpolation]]
+
+```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
+
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
-s
