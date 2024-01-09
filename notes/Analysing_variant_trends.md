@@ -2,7 +2,7 @@
 id: 1hnn8maoednnxdw5feqd4kq
 title: Analysis of the varient trend plots
 desc: 'This note contains all summary of variant trend analysis'
-updated: 1703251479866
+updated: 1704791130684
 created: 1701882355956
 ---
 
@@ -43,6 +43,8 @@ created: 1701882355956
 1. No records of the following variants B.1.429(Epsilon), B.1.525(Eta), B.1.526(Iota), C.37(Lambda), B.1.621(Mu), P.3(Theta), P.2(Zeta), B.1.640 in the 10 chosen countries during Jan22-Oct23.
 
 ## Interesting plots of lineages not variant
+
+> All the following plots might change if the lineage mapping is done based on the characteristic mutations obtained from OutBreakInfo. Presently the mapping is based on mutations obtained from the GISAID database for each country.
 
 1. BF.7:  Peaks of Denamrk around 30% and Germany 15% are notable because no other country has recorded such frequencies for this lineage - they are less than 5%. And Norway has no trace of this lineage. ![BF_7](assets/plots/BF_7.png)
 2. HW.1: Aaustralia has highest frequency of this lineage in the month of Sept23 - above 50%, while other countries have all their frequncies below 10%. South Koreaa and USA are the other two countries which have meager occurances of this ineage other 7 countries have no trace of this lineage. ![HW_1](assets/plots/HW_1.png)
