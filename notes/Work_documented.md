@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1704809366733
+updated: 1704874863241
 created: 1700240700998
 ---
 # Objective
@@ -104,11 +104,12 @@ ten_country_mut_data/* \
 ![pangolin_assignment](assets/Pics/pangolin_assignment_analysis.png)
 
 ![pangolin_assignemt_details](assets/Pics/pangolin_assignment.png)
+
 - All these are present in the ```Work/Data_Analysis/assigning_the_unassigned.Rmd```
 
 ## Finding positions under pressure (BIG GOAL)
 
-The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530) in the aa_substitution has to be first calculated and interpolated to get the daily data.
+The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530)([[question on the position|Work_documented.possible_questions#7-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) in the aa_substitution has to be first calculated and interpolated to get the daily data.
 ![frequency interpolation](assets/Pics/Frequency_interpolation.png)
 
 - For Each country the mutation data from GISAID has been used as the input.
