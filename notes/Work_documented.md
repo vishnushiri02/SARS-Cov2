@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1704874863241
+updated: 1704989693231
 created: 1700240700998
 ---
 # Objective
@@ -126,6 +126,21 @@ The big goal is to find the positions under pressure. To obtain this, firstly th
 >- [[Question on week-day interpolation|Work_documented.possible_questions#5-if-data-is-combined-weekly-how-should-this-frequency-be-distributed-among-the-week-to-get-the-week-daily-interpolation]]
 >- [[Question on the interpolation method|Work_documented.possible_questions#6-why-do-we-do-linear-interpolation-why-not-spline-interpolation]]
 
+## Computing the pressure on the position
+
+With the formula (given by Prof.Max) the pressure on each posittion was computed
+$\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
+
+- Where the f(pos,s) is the frequency of the position on time s.
+- $exp^{-k[t-s]}$ is the discount factor - mutation frequencies that occurred [t-s] days ago get discounted by the half life of neutralising antibodies.
+- $k\sim \frac{ln(2)}{45+14}$
+- By suggestion of the Prof. the vector for discount factor was first computed. For this the date range for each of the country_df was found. If the difference between the sart day and the end day is 9 then [t-s] could be in the range 0-9. Hence with this as base the discount factor was computed for [t-s] ranging 0-[difference between the start day to end day in the dataframe]. All these values are stored in a vector.
+- According to the selected $t_0$, $t$ the discount factor was sliced and the corresponding frequency of the particular position in the time suration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
+- This was done for all the RBD positions in a country and repeated for all the 10 countries.
+- The output will have two columns - RBD posisition and the pressure on the position.
+
 ```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
+
+
 
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
