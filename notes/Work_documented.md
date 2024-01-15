@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1704989693231
+updated: 1705325574087
 created: 1700240700998
 ---
 # Objective
@@ -138,6 +138,21 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 - According to the selected $t_0$, $t$ the discount factor was sliced and the corresponding frequency of the particular position in the time suration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
 - This was done for all the RBD positions in a country and repeated for all the 10 countries.
 - The output will have two columns - RBD posisition and the pressure on the position.
+
+## Masking
+
+- The objective of masking to find the exposed positions among the RBD spike positions. 
+- To know the exposed residues the solvent accessibility of each of the residues in the spike protein were found. [[question on mutations and solvent accessibility|Work_documented.possible_questions#8-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-changes-right-due-to-possible-difference-in-the-fold-in-that-case-should-we-study-these-positions-in-each-of-the-voi]]
+- To find solvent accessibility of the protein various tools were utilitsed. This can be found here[[Work_documented.Finding_surface_residues]]
+- From the output of each of the tool Spike RBD surface positions were found. This process was direct in the case of the output from GetArea and Netsurf3.0 but in the case of DSSP, relative solvent accessibility was computed from the absolute solvent accessibility in the dssp output file. Using this computed relative solvent accessibility the surface residues were found.
+  
+> The categorising treshold is set as 25% similar to Netsurf3.0. This would need advice.
+
+- The number of surface residues flagged by the 3 tools vary.
+  
+> Dssp : 170 residues, NetSur3.0 : 101 residues, GetArea : 104 residues. Though the numbers of getArea and Netsurf are matching, they only flag 28 positions commonly, others are all different. DSSP and Netsurf3.0 share 49 commonly flagged positions. GetArea and Dssp doesn't flag any position commonly.
+
+- Residues flagged by each of the tools are fished from the ten country's position under pressure dataframe. The numbers are tabulated .![Methods comparison](assets/Pics/methods_comparison.png)
 
 ```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
 

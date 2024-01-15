@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1704874658182
+updated: 1705315915317
 created: 1701937898390
 ---
 
@@ -44,3 +44,7 @@ australia|13257|13261
 -ANS:
 
 ### 7. Aaccording to Uniprot the RBD region in spike  is 319-541aa ![spike rbd uniprot](assets/Pics/uniprot_spikeRBD.png)
+ANS:
+
+### 8. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might changes right due to possible difference in the fold? In that case should we study these positions in each of the VOI?
+ANS:
