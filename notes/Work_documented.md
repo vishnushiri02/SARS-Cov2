@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1705325574087
+updated: 1705422461690
 created: 1700240700998
 ---
 # Objective
@@ -141,7 +141,7 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 
 ## Masking
 
-- The objective of masking to find the exposed positions among the RBD spike positions. 
+- The objective of masking to find the exposed positions among the RBD spike positions.
 - To know the exposed residues the solvent accessibility of each of the residues in the spike protein were found. [[question on mutations and solvent accessibility|Work_documented.possible_questions#8-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-changes-right-due-to-possible-difference-in-the-fold-in-that-case-should-we-study-these-positions-in-each-of-the-voi]]
 - To find solvent accessibility of the protein various tools were utilitsed. This can be found here[[Work_documented.Finding_surface_residues]]
 - From the output of each of the tool Spike RBD surface positions were found. This process was direct in the case of the output from GetArea and Netsurf3.0 but in the case of DSSP, relative solvent accessibility was computed from the absolute solvent accessibility in the dssp output file. Using this computed relative solvent accessibility the surface residues were found.
@@ -153,6 +153,14 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 > Dssp : 170 residues, NetSur3.0 : 101 residues, GetArea : 104 residues. Though the numbers of getArea and Netsurf are matching, they only flag 28 positions commonly, others are all different. DSSP and Netsurf3.0 share 49 commonly flagged positions. GetArea and Dssp doesn't flag any position commonly.
 
 - Residues flagged by each of the tools are fished from the ten country's position under pressure dataframe. The numbers are tabulated .![Methods comparison](assets/Pics/methods_comparison.png)
+
+## Visualization of the positions under pressure
+
+- To know how the positions under pressure would differ by country I thought heat map will be the good choice
+- To do this a dataframe was created with a column of all the Spike RBD positions given by the tool. Other 10 columns belonging to each of the 10 countries. These columns contain the pressure for each of the positions that was computed using the mutation . If a position has no record of mutation in a country it is assigned to zero.
+- This dataframe is reshaped to make it usable for geom_tile.
+- The heat map is then plotted on this reshaped dataframe. ![Netsurf output heatmap](assets/plots/netsurf_based_output.png)
+- This was done for the outputs from all 3 tools and the heatmap is saved in different pdfs with ```Work/Data_Analysis/netsurf_based_output.pdf```,```Work/Data_Analysis/dssp_based_output.pdf```,```Work/Data_Analysis/getArea_based_output.pdf```.
 
 ```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
 
