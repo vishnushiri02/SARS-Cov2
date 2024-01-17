@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1705422461690
+updated: 1705485322764
 created: 1700240700998
 ---
 # Objective
@@ -25,14 +25,37 @@ graph TD;
   - From the GISAID, the total number of **_high_**, **_coverge_** completed sequence deposited by each country (200+) in the past 22 months(Jan2022-Oct2023) were retrieved in a month wise fasion using the R Package GISAIDR. The table is in ```Work/Data_Analysis/country_monthly_submission.csv```
   - Countries that had more than 10,000 sequences deposited in total in the past 22 months were alone considered further.
   - This included 10 countries : India, South Korea, Denmark, Germany, Norway, Spain, United Kingdom, Canada, USA, Australia. ```Work/Data_Analysis/chosen_ten_country_submission.csv```
-  - The trend of the time series data of these countries were plotted. It is present in the file ```Work/Data_Analysis/plots/ten_Country_data_trend_plots.pdf```
+  - The trend of the time series submission statistics of these countries were plotted. It is present in the file ```Work/Data_Analysis/plots/ten_Country_data_trend_plots.pdf```
   ![Trends in 10 countries](assets/plots/Country_trend_plots.png)
   - Outlier detection and pruning of the observation horizon(Time period considered): Extreme low values were searched for, using the [[Hampler Filter|Glossary#hampler-filter]] (one of the [[Outlier Estimation and methods|Glossary#outlier-estimation-and-methods]]). outliers_mad from Routliers package was used . Since there were no extreme low values found in any of the countries, the observation time period was not pruned.
   - The sequence data for 10 countries were downloaded. There are files with crude data - all data retrieved from GISAID for each of the accesssion ID (29 cols of data) and there are files with essential columns: strain,virus,collection_date,country,pangolineage,sequence, length of the sequence, GISAID accession_id. The crude data for 10 countries are present 10 files in the folder ```Work/Data_Analysis/ten_country_crude_data_seq``` and the essential column files are in the folder ```Work/Data_Analysis/ten_country_ess_data```
   - The Rmd also has a codeblock for downloading data with AA_substitution. This data was needed for mapping lineages to their parental lineage. For this I used the modified download script(modified by me) ```Work/Data_Analysis/Modified_GISAIDRdownload.R```.
     > This can be done by ```fix(Download)``` and modifying the script as we need
   - This mutation data are stored in ```Work/Data_Analysis/ten_country_mut_data```
+  
+> There were some inconsistencies in the Date entries (only year no month or year and month an no date) such entries were removed.
+> On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in ```Work/Data_Analysis/chosen_ten_country_submission.csv``` excluding few countries.
+> After removing the inconsistent date entries the numbers(downloaded and number in file) for India match.
+> The inconsistencies are reported in the file ```Work/Data_Analysis/inconsistencies_in_data.numbers```.
+> The number of downloaded entries are more than then numbers in file.
+> After looking into it, it was observed that there were few more entries added to these countries in the time gap(around a week) between the compiling ```Work/Data_Analysis/chosen_ten_country_submission.csv``` and downloading data. [[Work_documented.checking inconsistencies]]
+## Summary
+Summary of the downloaded data
 
+| **Country**                 | **Total number of entries downloaded (Jan22-Oct23)** | **Entries after removing the date inconsistencies** | **Number of unassigned** | **Percentage of unassigned** |
+| --------------------------- | ---------------------------------------------------- | --------------------------------------------------- | ------------------------ | ---------------------------- |
+| **Asia / India**            | 18106                                                | 15783                                               | 0                        | 0 %                          |
+| **Asia / South Korea**      | 13808                                                | 13808                                               | 0                        | 0 %                          |
+| **Europe / Denmark**        | 163900                                               | 163900                                              | 7                        | 0,004 %                      |
+| **Europe / Germany**        | 66374                                                | 66236                                               | 0                        | 0 %                          |
+| **Europe / Norway**         | 12264                                                | 12264                                               | 0                        | 0 %                          |
+| **Europe / Spain**          | 17991                                                | 17921                                               | 0                        | 0 %                          |
+| **Europe / United Kingdom** | 32835                                                | 30597                                               | 74                       | 0,242 %                      |
+| **North America / Canada**  | 20791                                                | 20791                                               | 0                        | 0 %                          |
+| **North America / USA**     | 75487                                                | 74971                                               | 5                        | 0,007 %                      |
+| **Oceania / Australia**     | 13267                                                | 13257                                               | 5                        | 0,038 %                      |
+
+[[Note on the unassigned|Work_documented#dealing-with-the-unassigned]]
 ## Mapping lineages
 
 - Mapping of lineages to their parental lineage is done based on the Pangolin lineage naming string and the spike mutations:
@@ -71,13 +94,6 @@ ten_country_mut_data/* \
   - In total there are 1628 unique lingeages which includes variants also. Running the mapping algorithm on this gives 715 lineages mapped to 16 variants and 913 lineages getting mapped to 531 lineages which includes Unknown.
   
   > If muation list is obtained using the outbreakinfo function getMutationsByLineage then the results vary for the non-variant lineages. 912(without unknown) lineages gets mapped to 676 lineages. This is present in assigning_the_unassigned.RMD
-
-> There were some inconsistencies in the Date entries (only year no months or year and month an no date) such entries were removed.
-> On the course of doing this it was identified that the number of entries that was downloaded for each countries do not exactly match the numbers in ```Work/Data_Analysis/chosen_ten_country_submission.csv``` excluding few countries.
-> After removing the inconsistent date entries the numbers(downloaded and number in file) for India match.
-> The inconsistencies are reported in the file ```Work/Data_Analysis/inconsistencies_in_data.numbers```.
-> The number of downloaded entries are more than then numbers in file.
-> After looking into it, it was observed that there were few more entries added to these countries and months in the time gap(around a week) between the compiling ```Work/Data_Analysis/chosen_ten_country_submission.csv``` and downloading data. [[Work_documented.checking inconsistencies]]
 
 ## Frequency computation
   
