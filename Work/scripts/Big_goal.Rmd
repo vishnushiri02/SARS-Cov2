@@ -1,0 +1,502 @@
+---
+title: "Position Under selection pressure"
+output: html_document
+date: "2024-01-02"
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+a
+```{r}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+ 
+BiocManager::install("Biostrings")
+BiocManager::install("muscle")
+install.packages("ptm")
+```
+
+```{r}
+library(lubridate)
+library(stringr) #for str_extract
+library(zoo) #
+library(dplyr)
+library(scales)#to convert rsa into percentage
+library(ptm)#for parse.dssp
+library(ggplot2)
+library(reshape2)#melting the data frame
+```
+
+# getting the 10 country data
+
+```{r}
+ten_country_mut_data = readRDS("ten_country_mut_data.rds") # getting the mutation data from 10 countries
+melt_df$exposed_positions<-paste_name(melt_df$exposed_positions)
+
+```
+
+## functions
+```{r}
+paste_name<-function(x){ #making the colnames
+x<-paste("pos",x,sep="_")
+ }
+input_ready<-function(x) unlist(strsplit(x,",")) #splits the string by comma and unlist the result
+getRBDmut<-function(x){ #function to get the spike RBD mutations
+  RBDmut<-c()
+  x<-input_ready(x) #takes in the mutation string and makes it into a vector
+  spike_mut<-x[grep("^Spike_",x)] #gives the spike mutations alone
+  for(i in spike_mut){
+    pos<-as.integer(str_extract(i,"\\d+")) #gets the aa position and converts it into integer
+    if(pos>=330 && pos<=530) #extract the spike mutations with aa position 330-530
+    {
+      RBDmut<-append(RBDmut,i) #creates the RBD mutation vector
+    }
+  }
+  if(length(RBDmut)!=0){
+    RBDmut_str<-paste(RBDmut,collapse = ",") #forms a string out of the RBD mutation vector
+    
+  }else
+  {
+    RBDmut_str<-NA
+  }
+  return(RBDmut_str)
+}
+#aggregate mutations weekly
+combine_weekly<-function(country_df,time_step=1){ #time step says if the combination should be weekly or biweekly or so on
+  week_year<-format(country_df$Collected_date,"%W-%y") #Monday is treated as the first day of the week
+  country_df<-cbind(country_df,week_year) # adding the year-week to the data frame
+  week_year_unique<- unique(week_year) 
+  result_df<-data.frame(matrix(nrow = 0,ncol = 4))
+  colnames(result_df)<-c("year_week_range","Range_of_dates","Spike_RBD_MutPos","No_of_sequences")
+  counter=0
+  Date_set<-c()
+  mutation_set<-c()
+  week_set<-c()
+  for(i in week_year_unique) #Rbd mutations for each time-step is obtained from all the entries belonging to the time step
+  {
+    counter=counter+1
+    
+      Date_set<-append(Date_set,country_df$Collected_date[country_df$week_year==i])
+      mutation_set<-append(mutation_set,country_df$aa_mut[country_df$week_year==i])
+      week_set<-append(week_set,i)
+      if(counter==time_step){ # if the number of iteration matches the timestep
+        total_seq<-length(Date_set) # total number of entries in each time step
+        week_range<- paste(range(week_set),collapse="~")
+        date_range<- paste(range(Date_set),collapse="~")
+        mutation_set<-gsub("[()]","",mutation_set) #removes the bracket from the mutation string
+        RBDmutPos<-getRBDmut(mutation_set) #gets the spike rbd mutation
+        if(!is.na(RBDmutPos)){ #stores only of the RDB mutation exists
+        result_df<-rbind(result_df,data.frame(year_week_range=week_range,Range_of_dates=date_range,Spike_RBD_MutPos=RBDmutPos,No_of_sequences=total_seq)) #storing the result
+        # reinitialising everything to make it ready for the next time step
+        Date_set<-c()
+        mutation_set<-c()
+        week_set<-c()
+        counter=0
+        }
+      }
+      
+      
+    }
+    
+      
+  return(result_df)
+    
+}
+```
+## daily rbd mutations
+```{r}
+combine_daily<-function(country_df){
+  unique_days<-sort(unique(country_df$Collected_date)) #gets all the date from the country_df and sorts them
+  resulting_df<-data.frame(matrix(nrow = 0,ncol = 3))
+  colnames(resulting_df)<-c("date","Spike_RBD_MutPos","No.seq")
+  for(i in 1:length(unique_days)){ #Spike Rbd mutations for each day is got
+    mutation_set<-(country_df$aa_mut[country_df$Collected_date==unique_days[i]]) #gets all the mutations for a day 
+    mutation_set<-gsub("[()]","",mutation_set) # clears off the brackets
+    RBDmutPos<-getRBDmut(mutation_set) # Gets all the spike RBD mutations
+    total_seq=length(mutation_set) # gives the number of entries for a day
+    if(!is.na(RBDmutPos)){#stores only of the RDB mutation exists
+    resulting_df<-rbind(resulting_df,data.frame(date=unique_days[i],Spike_RBD_MutPos=RBDmutPos,No_of_sequences=total_seq))
+    } 
+  }
+  return(resulting_df)
+}
+```
+
+## Frequency cal function
+Can calculate frequency both position and mutationwise. Depends on the function arguments. 
+```{r}
+get_frequency<-function(country_rbd,Pos=FALSE){ #pos is for function overloading
+  countryrbd_daily_freq<-data.frame()
+  unique_mut<-unique(input_ready(country_rbd$Spike_RBD_MutPos)) #gets the all the unique RBD mutations available in the country irrespective of the date
+  if(Pos==TRUE){ #calculates the frequency for a position
+    unique_pos<-as.integer(unique(str_extract(unique_mut,"\\d+"))) #gets the unique positions of the RBD mutations available in the country irrespective of the day
+    for(i in 1:nrow(country_rbd)){ # for each time step
+    freq_vec<-c()
+    RBD_mut<-input_ready(country_rbd$Spike_RBD_MutPos[i]) #RBD mutations for each time step
+    country_rbd_pos_tst<-as.integer(str_extract(RBD_mut,"\\d+")) #gets the position of these rbd mutations
+      
+    for(j in unique_pos){
+    freq<-length(country_rbd_pos_tst[country_rbd_pos_tst==j])/country_rbd$No_of_sequences[i] #calculates the frequency
+    freq_vec<-append(freq_vec,freq)
+    }
+    countryrbd_daily_freq<-rbind(countryrbd_daily_freq,freq_vec) #frequency of each pos for each time step
+    }
+    countryrbd_daily_freq<-cbind(countryrbd_daily_freq,country_rbd$date)
+    unique_pos_name<-unlist(lapply(unique_pos,paste_name))
+    col_names<-c(unique_pos_name,"date")
+    colnames(countryrbd_daily_freq)<-col_names
+    
+  }else{
+  for(i in 1:nrow(country_rbd)){
+    freq_vec<-c()
+    RBD_mut<-input_ready(country_rbd$Spike_RBD_MutPos[i])#gets the timestep wise rbd mutations 
+    for(j in unique_mut){
+      
+    freq<-length(RBD_mut[RBD_mut==j])/country_rbd$No_of_sequences[i]
+    freq_vec<-append(freq_vec,freq)
+    }
+    countryrbd_daily_freq<-rbind(countryrbd_daily_freq,freq_vec)
+  }
+  
+  countryrbd_daily_freq<-cbind(countryrbd_daily_freq,country_rbd$date)
+  col_names<-c(unique_mut,"date")
+  colnames(countryrbd_daily_freq)<-col_names
+  }
+  return(countryrbd_daily_freq)
+}
+
+```
+## Interpolation function
+
+```{r}
+interpolate_days<-function(daily_freq_df){
+  
+all_days<-seq(as.Date("2022-01-01"),as.Date("2023-10-31"),by="days") #all the days in the time period of interest
+fre_vec<-c()
+
+spike_rbd_pos<-as.integer(str_extract(head(colnames(daily_freq_df),-1),"\\d+")) #excluding the date column and getting the position from the col name
+country_ts<-data.frame(matrix(nrow=length(all_days),ncol = 0))
+country_ts<-cbind(country_ts,all_days)
+
+for(i in 1:length(spike_rbd_pos)){ #for each rbd pos
+  temp_ts<-data.frame(matrix(nrow = 0,ncol = 2))
+   
+   print(colnames(daily_freq_df)[i])
+ for(j in 1:length(all_days)){ #for each day
+  if(!identical(daily_freq_df[,i][daily_freq_df$date==all_days[j]],numeric(0))){ #if a day has frequency entry it is stored 
+    freq<-daily_freq_df[,i][daily_freq_df$date==all_days[j]]
+    temp_ts<-rbind(temp_ts,data.frame(all_days[j],freq))
+  }
+  else{ #else na is stored for that day
+    freq<-NA
+    temp_ts<-rbind(temp_ts,data.frame(all_days[j],freq))
+  }
+ }
+  colnames(temp_ts)<-c("date","freq")
+  miss<-temp_ts$date[is.na(temp_ts$freq)] #getting the days with missing data
+  print("interpolating")
+  temp_df<-data.frame(approx(x=temp_ts$date,y=temp_ts$freq,xout = miss, method="linear"))
+ # adding the interpolated data to the data frame
+  for(a in 1:nrow(temp_df)){
+    if(!is.na(temp_df$y[a])){
+      
+      temp_ts$freq[temp_ts$date==temp_df$x[a]]<-temp_df$y[a]
+      
+    }
+  }
+
+  country_ts<-cbind(country_ts,temp_ts$freq)
+}
+unique_pos_name<-unlist(lapply(spike_rbd_pos,paste_name))
+colnames(country_ts)<-c("date",unique_pos_name)
+
+return(country_ts)
+  
+}
+```
+
+
+
+#From combine to interpolation for daily data
+```{r}
+ten_country_daily_rbd_freq<-list()
+for(i in names(ten_country_mut_data)){
+ daily_rbd<-combine_daily(ten_country_mut_data[[i]])
+ daily_rbd_freq<-get_frequency(daily_rbd,Pos = TRUE)
+ ten_country_daily_rbd_freq[[i]]<-interpolate_days(daily_rbd_freq)
+}
+```
+
+# Handling trailing NA
+Interpolation method approximate includes NAs in the dataset for the trailing points.
+```{r}
+for(i in names(ten_country_daily_rbd_freq)){
+  na_count<-sum(is.na(ten_country_daily_rbd_freq[[i]]))
+  if(na_count>0){
+    cat(i,"number of na",na_count,"\n")
+    ten_country_daily_rbd_freq[[i]]<-na.trim(ten_country_daily_rbd_freq[[i]])
+  }
+}
+```
+
+## Weekly and biweekly RBD mutations computed for all the countries
+for all the 10 countries weekly and biweekly spike Rbd mutations are obtained
+```{r}
+Ten_country_RBDmut_weekly<-list()
+Ten_country_RBDmut_biweekly<-list()
+for(i in names(ten_country_mut_data)){
+  Ten_country_RBDmut_weekly[[i]]<-combine_weekly(ten_country_mut_data[[i]])
+  Ten_country_RBDmut_biweekly[[i]]<-combine_weekly(ten_country_mut_data[[i]],2)
+  
+}
+saveRDS(Ten_country_RBDmut_biweekly, file = "Ten_country_RBDmut_biweekly.rds")
+saveRDS(Ten_country_RBDmut_weekly, file = "Ten_country_RBDmut_weekly.rds")
+```
+
+# Considering norway alone(trial)
+```{r}
+# norway_rbd<-combine_daily(ten_country_mut_data[["norway"]])
+# norwayrbd_daily_freq<-get_frequency(norway_rbd)
+# norwayrbd_daily_pos_freq<-get_frequency(norway_rbd,Pos = TRUE)
+# norway_weekly<-Ten_country_RBDmut_weekly[["norway"]]
+# norway_biweekly<-Ten_country_RBDmut_biweekly[["norway"]]
+# norway_unique_mut<-unique(input_ready(norway_biweekly$Spike_RBD_MutPos)) # will be the same if other data set is used aswell
+# norway_biweekly_freq<-data.frame()
+# #norway_biweekly_freq_hm<-data.frame()
+# for(i in 1:nrow(norway_biweekly)){
+#   freq_vec<-c()
+#   for(j in norway_unique_mut){
+#     RBD_mut<-input_ready(norway_biweekly$Spike_RBD_MutPos[i])
+#     freq<-length(RBD_mut[RBD_mut==j])/norway_biweekly$No_of_sequences[i]
+#     print("computing the frequency.....")
+#     freq_vec<-append(freq_vec,freq)
+#     #norway_biweekly_freq_hm<-rbind(norway_biweekly_freq_hm,data.frame(norway_biweekly$year_week_range[i],j,freq))
+#     
+#   }
+#   norway_biweekly_freq<-rbind(norway_biweekly_freq,freq_vec)
+# }
+# colnames(norway_biweekly_freq)<-norway_unique_mut
+# rownames(norway_biweekly_freq)<-norway_biweekly$year_week_range
+#colnames(norway_biweekly_freq_hm)<-c("Year_week","RBD_mut","Frequency")
+#ggplot(norway_biweekly_freq_hm,aes(x=Year-week,y=RBD_mut,fill=Frequency))+geom_tile()
+```
+
+
+```{r}
+saveRDS(ten_country_daily_rbd_freq,file = "ten_country_daily_rbd_freq.rds")
+```
+
+
+
+## Computing the discount factor
+just considering one country (norway)
+```{r}
+norway<-ten_country_daily_rbd_freq[["norway"]] # get the country_df
+Total_days<-nrow(norway) #Total number of days in the dataframe
+k<-log(2)/(45+14) # half life -> log in r is natural log ln.
+discount_factor<-c()
+
+## calculate the discount factor for all possible values
+for(i in 0:(Total_days-1)){ # [t-s] will be equal to total days only if s=0. By dates it's not possible
+   d_f<-round(exp(-k*i),3) # exp(0) will be stored in index 1, so to exp(648) is stored in index 649
+  discount_factor=append(discount_factor,d_f)
+}
+#considering the entire time line
+t_0<-as.Date(range(norway$date)[1]) 
+t<-as.Date(range(norway$date)[2])
+day_int<-as.numeric(difftime(t,t_0)) #number of days between them, to slice the discount_factor accordingly
+dis_fact<-rev(discount_factor[1:(day_int+1)])
+norway_pp<-data.frame()
+for(i in 2:ncol(norway)){
+f_m<-c()
+for(j in norway$date){
+  f_m<-append(f_m,norway[norway$date==j,i])
+}
+pos_pre<-as.numeric(dis_fact %*% f_m)
+norway_pp<-rbind(norway_pp,data.frame(colnames(norway)[i],pos_pre))
+}
+```
+
+# general function to calculate the position under pressure
+```{r}
+get_pup<-function(country_df,t_0=as.Date(range(country_df$date)[1],t=as.Date(range(country_df$date)[2]))){#default is to considering the entire time line
+  Total_days<-nrow(country_df) #Total number of days in the dataframe
+  k<-log(2)/(45+14) # half life -> log in r is natural log ln.
+  discount_factor<-c()
+
+## calculate the discount factor for all possible values
+for(i in 0:(Total_days-1)){ # [t-s] will be equal to total days only if s=0. By dates it's not possible
+   d_f<-round(exp(-k*i),3) # exp(0) will be stored in index 1, so to exp(648) is stored in index 649
+  discount_factor=append(discount_factor,d_f)
+}
+
+# t_0<-as.Date(range(india$date)[1]) 
+# t<-as.Date(range(india$date)[2])
+  if(is.unsorted(country_df$date)){
+    country_df<-country_df[order(country_df$date)] #sorts the country data frame by the date
+  }
+day_int<-as.numeric(difftime(t,t_0)) #number of days between them, to slice the discount_factor accordingly
+dis_fact<-rev(discount_factor[1:(day_int+1)]) #reversing the vector
+interested_time<-sort(seq(as.Date(t_0),as.Date(t),by="days"))
+country_pp<-data.frame()
+for(i in 2:ncol(country_df)){
+f_m<-c()
+for(j in interested_time){
+  f_m<-append(f_m,country_df[country_df$date==j,i]) #getting the daily frequency of the position
+}
+pos_pre<-as.numeric(dis_fact %*% f_m)
+country_pp<-rbind(country_pp,data.frame(colnames(country_df)[i],pos_pre))
+}
+colnames(country_pp)<-c("Spike_RBD_position","position_under_pressure")
+return(country_pp)
+}
+```
+
+# Compute position under pressure for all countries
+```{r}
+ten_country_pup<-list()
+for(i in names(ten_country_daily_rbd_freq)){
+  cat("in country",i,"\n")
+  ten_country_pup[[i]]<-get_pup(ten_country_daily_rbd_freq[[i]])
+}
+```
+```{r}
+write.table(ten_country_pup[["india"]],"pos_under_pressure.csv",col.names = TRUE,sep = ",")
+saveRDS(ten_country_pup,"ten_country_pos_under_pressure.rds")
+```
+
+# Masking based on netsurf3.0 output
+Taking the positions that are not burried
+
+```{r}
+netsurf_op<-read.csv("/Users/vishnushirishyamsaisundar/Desktop/Net_surf_3_op.csv")
+netsurf_res_rsa<-netsurf_op[c(3,4)] # getting only the residue number and the relative solvent accessibility
+exposed_rbd_netsur<-netsurf_res_rsa[netsurf_res_rsa$n>=330 & netsurf_res_rsa$n<=530 & netsurf_res_rsa$rsa>0.25,]
+exposed_rbd_netsur$rsa<-percent(exposed_rbd_netsur$rsa,accuracy = 3)
+exposed_pos_netsur<-paste_name(exposed_rbd_netsur$n)
+```
+
+```{r}
+ten_country_exposed_netsur<-list()
+for(i in names(ten_country_pup)){
+  ten_country_exposed_netsur[[i]]<-ten_country_pup[[i]][ten_country_pup[[i]]$Spike_RBD_position %in% exposed_pos_netsur,]
+}
+```
+
+# Masking based on get area output
+
+```{r}
+getarea_op<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/Getarea_first_set.csv",sep = ",")
+getarea_res_io<-getarea_op[c(2,8)]
+colnames(getarea_res_io)<-c("res","in_or_out")
+getarea_res_io$in_or_out<-gsub("^\\s+$",NA,getarea_res_io$in_or_out)
+exposed_rbd_getarea<-getarea_res_io[getarea_res_io$res>=330 & getarea_res_io$res<=530 & getarea_res_io$in_or_out=="i",]
+exposed_pos_getarea<-paste_name(exposed_rbd_getarea$res)
+```
+
+```{r}
+ten_country_exposed_getarea<-list()
+for(i in names(ten_country_pup)){
+  ten_country_exposed_getarea[[i]]<-ten_country_pup[[i]][ten_country_pup[[i]]$Spike_RBD_position %in% exposed_pos_getarea,]
+}
+```
+
+## DSSP
+
+```{r}
+dssp_op<-parse.dssp("6xlu.dssp") #this file was created using dssp installed in the system. running this command mysteriously deletes the file
+max_access<-max(dssp_op$sasa)
+rsa_dssp<-dssp_op$sasa/max_access
+dssp_op<-cbind(dssp_op,rsa_dssp)
+dssp_res_rsa<-dssp_op[c(2,9)]
+exposed_rbd_dssp<-dssp_res_rsa[dssp_res_rsa$respdb>=330 & dssp_res_rsa$respdb<=530 & dssp_res_rsa$rsa_dssp>0.25,]
+exposed_rbd_dssp$rsa_dssp<-percent(exposed_rbd_dssp$rsa_dssp,accuracy = 3)
+exposed_pos_dssp<-paste_name(exposed_rbd_dssp$respdb)
+```
+
+```{r}
+ten_country_exposed_dssp<-list()
+for(i in names(ten_country_pup)){
+  ten_country_exposed_dssp[[i]]<-ten_country_pup[[i]][ten_country_pup[[i]]$Spike_RBD_position %in% exposed_pos_dssp,]
+}
+```
+## Comparing methods
+```{r}
+compare_df<-data.frame()
+for(i in names(ten_country_exposed_netsur)){
+compare_df<-rbind(compare_df,data.frame(i,nrow(ten_country_exposed_getarea[[i]]),nrow(ten_country_exposed_netsur[[i]]),nrow(ten_country_exposed_dssp[[i]])))
+}
+colnames(compare_df)<-c("Country","getArea","NetSur","DSSP")
+```
+
+# Just considering results from netsurf3.0
+creating a matrix to make it into a heat map
+
+```{r}
+tencountry_exposed_pup<-data.frame()
+for(i in exposed_pos_netsur){
+  pup<-c()
+  pos<-as.integer(str_extract(i,"\\d+"))
+  pup<-append(pup,pos)
+  for(j in names(ten_country_exposed_netsur)){
+    if(!identical(ten_country_exposed_netsur[[j]]$position_under_pressure[ten_country_exposed_netsur[[j]]$Spike_RBD_position==i],numeric(0))){
+      pup<-append(pup,as.numeric(ten_country_exposed_netsur[[j]]$position_under_pressure[ten_country_exposed_netsur[[j]]$Spike_RBD_position==i]))
+    }
+    else{
+      pup<-append(pup,as.numeric(0))
+    }
+  }
+  tencountry_exposed_pup<-rbind(tencountry_exposed_pup,pup)
+}
+colnames(tencountry_exposed_pup)<- c("exposed_positions",names(ten_country_exposed_netsur))
+tencountry_exposed_pup_mat<-data.matrix(tencountry_exposed_pup)
+```
+
+```{r}
+melt_df<-melt(tencountry_exposed_pup,id="exposed_positions")
+melt_df$exposed_positions<-paste_name(melt_df$exposed_positions)
+pdf("netsurf.pdf", height=20, width=20)
+ggplot(melt_df,aes(x=variable,y=exposed_positions,fill=value))+geom_tile(color="black")+scale_fill_gradient(low="white", high="blue") + theme_light()+ggtitle("Based on the output of Netsurf")+geom_text(aes(label=value),color="#FFA500",size=4)
+dev.off()
+```
+# generalised
+```{r}
+get_complete_exposed<-function(pos_li,ten_country_tool_df){
+tencountry_exposed_pup<-data.frame()
+for(i in pos_li){
+  pup<-c()
+  pos<-as.integer(str_extract(i,"\\d+"))
+  pup<-append(pup,pos)
+  for(j in names(ten_country_tool_df)){
+    if(!identical(ten_country_tool_df[[j]]$position_under_pressure[ten_country_tool_df[[j]]$Spike_RBD_position==i],numeric(0))){
+      pup<-append(pup,as.numeric(ten_country_tool_df[[j]]$position_under_pressure[ten_country_tool_df[[j]]$Spike_RBD_position==i]))
+    }
+    else{
+      pup<-append(pup,as.numeric(0))
+    }
+  }
+  tencountry_exposed_pup<-rbind(tencountry_exposed_pup,pup)
+}
+colnames(tencountry_exposed_pup)<- c("exposed_positions",names(ten_country_tool_df))
+return(tencountry_exposed_pup)
+}
+
+```
+
+```{r}
+complete_exposed_dssp<-get_complete_exposed(exposed_pos_dssp,ten_country_exposed_dssp)
+melt_df_dssp<-melt(complete_exposed_dssp,id="exposed_positions")
+melt_df_dssp$exposed_positions<-paste_name(melt_df_dssp$exposed_positions)
+pdf("dssp.pdf", height=20, width=20)
+ggplot(melt_df_dssp,aes(x=variable,y=exposed_positions,fill=value))+geom_tile(color="black")+scale_fill_gradient(low="white", high="blue") + theme_light()+ggtitle("Based on the output of Dssp")
+dev.off()
+```
+```{r}
+complete_exposed_ga<-get_complete_exposed(exposed_pos_getarea,ten_country_exposed_getarea)
+melt_df_ga<-melt(complete_exposed_ga,id="exposed_positions")
+melt_df_ga$exposed_positions<-paste_name(melt_df_ga$exposed_positions)
+pdf("getArea.pdf", height=20, width=20)
+ggplot(melt_df_ga,aes(x=variable,y=exposed_positions,fill=value))+geom_tile(color="black")+scale_fill_gradient(low="white", high="blue") + theme_light()+ggtitle("Based on the output of GetArea")+geom_text(aes(label=value),color="#FFA500",size=4)
+dev.off()
+```

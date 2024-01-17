@@ -1,0 +1,244 @@
+---
+title: "Analysis_of_GISAID_Data"
+output: html_document
+date: "2023-11-06"
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+### Login
+
+```{r}
+#install.packages("Routliers")
+library(gridExtra)
+library(ggplot2)
+library(Routliers)
+library(scales)
+library(lubridate)
+library(GISAIDR)
+Credentials <- login("xxxxxx","xxxxxxx")
+```
+
+## GISAID Location list
+Considering the continent and the country. country_location values that differ in case and spacing are considered as unique. So have to cross check
+```{r}
+location_hierarchy<-readLines("GISAID_LOCATIONS.txt")
+country_location<-c()
+for (i in location_hierarchy){
+  country_name<-paste(unlist(strsplit(i,"/"))[1:2], collapse = "/") #just considering the continent and the country name
+  if(length(unlist(strsplit(country_name,"/")))==2 && gsub(" ","",unlist(strsplit(country_name,"/"))[2]) != "..."){
+  country_location<-append(country_location,country_name)
+}}
+country_location<-unique(country_location) 
+#country_location_sub<-country_location[-c(1:101)] #got to do this since the previous execution stopped 
+
+```
+
+## Creating the start and end date
+With the function seq the from and to dates are created.
+```{r}
+ from_date<-seq(as.Date("2022-01-01"),as.Date("2023-11-01"),by="months")
+ to_date<-seq(as.Date("2022-02-01"),as.Date("2023-12-01"),by="months")-1 # minus one to get the last date of the prevous month 
+#from_date<-seq(as.Date("2020-01-01"),as.Date("2023-12-01"),by="months")
+#to_date<-seq(as.Date("2020-02-01"),as.Date("2024-01-01"),by="months")-1
+
+```
+
+## Download monthwise number of data for each country
+
+```{r}
+month_year<-format(to_date,"%b-%Y")
+country_monthly_submission<-data.frame()
+#COUNTRIES<-list("India","Afghanistan")
+for (country in country_location) {
+  monthly_submissions<-c() #vector to collect the month wise total number of entries
+  file_df<-data.frame()
+  Credentials <- login("xxxx","xxxx")#fill the username and password
+  cat("In the country",country,"\n")
+  
+  for (i in 1:length(from_date)){
+    cat("month-year",month_year[i],"\n")
+    
+  total_entries_monthwise <-query(credentials = Credentials, location = country, from = as.character(from_date[i]), to = as.character(to_date[i]), high_coverage = TRUE,complete = TRUE, total = TRUE) #argument total gives the count of the hits 
+  monthly_submissions<-append(monthly_submissions,total_entries_monthwise) #Collects the numbers for the months interested
+  
+  
+  }
+  file_df<-rbind(file_df,c(country,monthly_submissions))
+  colnames(file_df)<-c("Country",format(to_date,"%b-%Y"))
+  write.table(file_df,"country_monthly_submission.csv",append = TRUE, sep = ",", row.names = FALSE, col.names = FALSE)
+  country_monthly_submission<-rbind(country_monthly_submission,c(country,monthly_submissions))
+  colnames(country_monthly_submission)<-c("Country",format(to_date,"%b-%Y"))
+  
+}
+```
+## Reading the csv file
+```{r}
+country_numbers<-read.csv("country_monthly_submission.csv")
+
+colnames(country_numbers)<-c("Country",month_year)
+country_numbers<-country_numbers[-c(176,179,174),] #Found duplicates of Australia, New zealand, USA
+country_numbers<-country_numbers[,-ncol(country_numbers)]# removing the column of november 2023 last month considered
+country_total<-rowSums(country_numbers[,2:ncol(country_numbers)])
+country_numbers<-cbind(country_numbers,country_total)
+month_total<-colSums(country_numbers[,2:ncol(country_numbers)])
+country_numbers<-rbind(country_numbers,c("total",month_total))
+
+```
+## plotting the global trend
+```{r}
+# global trend of number of seq submitted in every month.
+from_date_reduced<-seq(as.Date("2022-01-01"),as.Date("2023-10-31"),by="months") #not considering nov 2023 thats why reduced
+global_trend_df<-data.frame(from_date_reduced,as.integer(unlist(country_numbers[nrow(country_numbers),2:(ncol(country_numbers)-1)],use.names = FALSE))) # creating a df with months and total number of entries in that month across the countries
+colnames(global_trend_df)<-c("D_m_y","Total_seq")
+pdf("Global_trend.pdf",onefile = TRUE)
+ggplot(global_trend_df, aes(x=D_m_y,y=Total_seq,group=1))+geom_line()+geom_point()+scale_x_date(date_labels = "%b-%y")+ggtitle("Global trend of monthwise sequence deposition")+xlab("Months")+ylab("Number of sequences")+scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),labels = trans_format("log10", math_format(10^.x)))
+dev.off()
+```
+## Number of countries that have reasonable collection of sequences
+```{r}
+nrow(subset(country_numbers[1:(nrow(country_numbers))-1,],as.integer(country_total)>1000)) #excluding the last total row; 43 countries have more than 1000 sequences deposited in 22months 
+nrow(subset(country_numbers[1:(nrow(country_numbers))-1,],as.integer(country_total)>5000)) #excluding the last total row; 17 countries have more than 5000 sequences deposited in 22months
+nrow(subset(country_numbers[1:(nrow(country_numbers))-1,],as.integer(country_total)>10000))#excluding the last total row; 10 countries have more than 10000 sequences deposited in 22months
+```
+
+### Plotting the monthwise trend in the 10 countries that has more than 10000 sequences Deposited in the last 23 months.
+```{r}
+country_10kplus<-subset(country_numbers[1:(nrow(country_numbers))-1,],as.integer(country_total)>10000) # excluding the last total row
+plot_li<-list()
+for(i in 1:nrow(country_10kplus)){
+  country<-country_10kplus[i,1]
+  total_seq<-country_10kplus[i,ncol(country_10kplus)]
+  plot_df<-data.frame(from_date_reduced,as.integer(unlist(country_10kplus[i,2:(ncol(country_10kplus)-1)],use.names = FALSE))) #taking each row from the country_10kplus df and making it a small df with 2 col- dates,seq_count
+  colnames(plot_df)<-c("D_m_y","Total_seq")
+ plots<-ggplot(plot_df, aes(x=D_m_y,y=Total_seq,group=1))+geom_line()+geom_point()+scale_x_date(date_labels = "%b-%y")+ggtitle(paste("Trend in",country))+xlab("Months")+ylab("Number of sequences")+scale_y_log10(breaks = trans_breaks("log10", function(x) 10^x),labels = trans_format("log10", math_format(10^.x)))+labs(caption = paste("Total sequences",total_seq) )
+ plot_li[[i]]=plots
+
+                                                                                                                               
+}
+grid.arrange(grobs=plot_li,ncol=2)
+write.table(country_10kplus,"chosen_ten_country_submission.csv",sep = ",",row.names = FALSE)
+```
+## Visualise outlier
+```{r}
+counts<-c()
+for(i in 1:nrow(country_10kplus)){
+  x<-as.integer(unlist(country_10kplus[i,2:(ncol(country_10kplus)-1)], use.names = FALSE))#leaving out the country and the total column
+  par(mfrow=c(1,3))
+  hist(x)
+ boxplot(x)
+ print(outliers_mad(x))
+  
+
+}
+
+```
+
+```{r}
+#boxplot.stats(x)$out
+```
+
+## Detecting a drop in data
+Creating the lower bound using the MAD and finding if there are any drop in data
+```{r}
+outlier_ind<-list()
+for(i in 1:nrow(country_10kplus)){
+  x<-as.integer(unlist(country_10kplus[i,2:(ncol(country_10kplus)-1)], use.names = FALSE))#leaving out the country and the total column
+  print(outliers_mad(x)) #prints MAD,Median, extreme low, extreme high
+  lower_bound<-median(x)-3*mad(x) #doing it manually so see if it concides with outliers_mad method
+  outlier_ind[[i]]<-which(x<lower_bound)
+  
+  
+}
+
+```
+## Downloading seq data from 10 countries for 22 months with the original download function from GISAIDR
+```{r}
+Credentials <- login("xxxx","xxxxx")
+for (country in country_10kplus$Country) {
+  Credentials <- login("xxxxx","xxxxx")
+  cat("In country",country)
+  countryaccession <-query(credentials = Credentials, location = country, from = "2022-01-01", to = "2023-10-31", fast=TRUE,high_coverage = TRUE,complete = TRUE)
+  try(for (i in seq(from =1, to=length(countryaccession$accession_id),by=ceiling(length(countryaccession$accession_id)/100))){
+  rang<-i+ceiling(length(countryaccession$accession_id)/100)-1
+  sub_acc=countryaccession$accession_id[i:rang]
+  Credentials <- login("xxxxx","xxxxxx")
+  download_data<- download(credentials = Credentials, list_of_accession_ids = sub_acc, get_sequence = FALSE)
+  file_name<-paste(gsub(" / | ","_",country),"seq_data.csv",sep = "_")
+  write.table(download_data,file = file_name, sep = ";", row.names = FALSE, col.names = FALSE,append = TRUE)
+})
+  
+  
+}
+```
+Resulting files are moved to the folder ten_country_crude_data_seq.
+Few essential columns from this files were extracted and writes into another file with suffix esscol. These files are put into folder ten_country_ess_data.
+
+## Downloading mut data from 10 countries for 22 months modifying the download function
+```{r}
+
+ten_country_ess_data_mut<-list()
+Credentials <- login("xxxxx","x")
+for (country in country_10kplus$Country) {
+  country_df<-data.frame()
+  Credentials <- login("xxx","xxx")
+  cat("In country",country)
+  countryaccession <-query(credentials = Credentials, location = country, from = "2022-01-01", to = "2023-10-31", fast=TRUE,high_coverage = TRUE,complete = TRUE)
+  try(for (i in seq(from =1, to=length(countryaccession$accession_id),by=ceiling(length(countryaccession$accession_id)/100))){
+  rang<-i+ceiling(length(countryaccession$accession_id)/100)-1
+  sub_acc=countryaccession$accession_id[i:rang]
+  Credentials <- login("xxx","xxxx")
+  download_data<- download(credentials = Credentials, list_of_accession_ids = sub_acc, get_sequence = FALSE)
+  ess_columns<-data.frame(download_data$Virus.name,download_data$Accession.ID,download_data$Collection.date,download_data$Location,download_data$Lineage,download_data$AA.Substitutions)
+  
+  country_df<-rbind(country_df,ess_columns)
+  
+  file_name<-paste(gsub(" / | ","_",country),"seq_data_mut.csv",sep = "_")
+  write.table(ess_columns,file = file_name, sep = ";", row.names = FALSE, col.names = FALSE,append = TRUE)
+})
+  colnames(country_df)<-c("Virus_name","Accession_id","Collected_date","Country","Pangolin_lineage","AA_substitution")
+  ten_country_ess_data_mut[[country]]<-country_df
+}
+save(ten_country_ess_data_mut,file = "ten_country_ess_data_mut.RData")
+```
+
+## Denmark 
+This has the highest number of entries so it needed different number to chunk the accession ids. 
+```{r}
+country_df_denmark<-data.frame()
+try(for (i in seq(from =1, to=length(countryaccession_red),by=ceiling(length(countryaccession_red)/5))){
+  rang<-i+ceiling(length(countryaccession_red)/5)-1
+  sub_acc=countryaccession_red[i:rang]
+  Credentials <- login("xxxx","xxxx")
+  download_data<- download(credentials = Credentials, list_of_accession_ids = sub_acc, get_sequence = FALSE)
+  ess_columns<-data.frame(download_data$Virus.name,download_data$Accession.ID,download_data$Collection.date,download_data$Location,download_data$Lineage,download_data$AA.Substitutions)
+  
+  country_df_denmark<-rbind(country_df_denmark,ess_columns)
+  
+  file_name<-paste(gsub(" / | ","_",country),"seq_data_mut.csv",sep = "_")
+  write.table(ess_columns,file = file_name, sep = ";", row.names = FALSE, col.names = FALSE,append = TRUE)
+})
+```
+
+## querying total entries for the 10 countries alone
+It is observed that new entries are being added to older months also. There is a difference in the number of montly entries when compared to the already stored numbers. looking into the submitted date would make things clear. 
+```{r}
+ten_country_submission<-list()
+for(i in country_10kplus$Country){
+  cat("In the country",i,"\n")
+  monthly_submissions<-c()
+  Credentials <- login("xxxx","xxxx")
+  for (j in 1:length(from_date)){
+    cat("month-year",month_year[j],"\n")
+    
+  total_entries_monthwise <-query(credentials = Credentials, location = i, from = as.character(from_date[j]), to = as.character(to_date[j]), high_coverage = TRUE,complete = TRUE, total = TRUE,) #argument total gives the count of the hits 
+  monthly_submissions<-append(monthly_submissions,total_entries_monthwise)
+  }
+  ten_country_submission[[i]]<-monthly_submissions
+}
+  
+```
+
+
+

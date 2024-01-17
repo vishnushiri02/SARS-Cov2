@@ -1,0 +1,294 @@
+---
+title: "assigning_the_unassigned"
+output: html_document
+date: "2023-12-15"
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(outbreakinfo)
+library(seqinr)
+```
+
+Taking the lineage from lineage_mut data frame which was created in the Lineage_mapping.Rmd. It was created by getting all the lineages and mutations from 10 countries. From this I am just considering the lineages list and going to retrieve the mutations using getMutationsByLineage from outbreakinfo package.
+
+```{r}
+lineage_mutations<-read.csv("ten_country_mut_data/ten_country_lineage_mut.csv",";",header=FALSE)
+colnames(lineage_mutations)<-c("Pango_lineage","aa_mut")
+lineage_mutations$Pango_lineage[lineage_mutations$Pango_lineage==""]<-"Unassigned"
+nrow(lineage_mutations)
+pangolineage<- unique(gsub("\\([^\\)]+\\)|\\s+","",lineage_mutations$Pango_lineage))# just considering the lineage name
+remove<-c("Unassigned","","other","unassigned","Other") # Entries that has these in the columns of pangolineage is not needed
+pangolineage<- pangolineage[! pangolineage %in% remove] # Removing those entries
+```
+
+Passing the lineage list to getMutationsByLineage function to get the lineages that have frequency of 0.75
+
+```{r}
+Character_muations<-getMutationsByLineage(pangolin_lineage = pangolineage, frequency = 0.75)
+#creating a dataframe with the lineage and their characteristics spike mutations, one mutation in each line whith their occurance counts
+character_spike_mutations<-data.frame(matrix(nrow = 0,ncol = 2))
+colnames(character_spike_mutations)<-c("Pangolineage","Spike_mutations")
+for(lineage in pangolineage){
+  mutations<-Character_muations$mutation[Character_muations$lineage==lineage] #collecting all the mutations for a lineage
+  spikemutations<-mutations[grep("^s:",mutations)] #Extracting the spike mutations
+  spikemutation_str<-paste(spikemutations,collapse = ",") #Making the mutations as strings
+  character_spike_mutations<-rbind(character_spike_mutations,data.frame(Pangolineage=lineage,Spike_mutations=spikemutation_str))
+  
+}
+character_spike_mutations<-character_spike_mutations[order(character_spike_mutations$Pangolineage),] #sorting to make it easier to see
+input_ready<-function(x) unlist(strsplit(x,","))
+find_difference<-function(x){
+  pairs_to_compare<-lapply(x, input_ready)
+  uni<-length(Reduce(union,pairs_to_compare))
+  common<-length(Reduce(intersect,pairs_to_compare))
+  distance<-uni-common
+  #distance<-length(Reduce(setdiff,pairs_to_compare))
+  return(distance)
+}
+get_spike<-function(x){
+  mut<-unlist(strsplit(gsub("[()]","",x),","))
+  spike_mut<-paste(tolower(gsub("Spike_","s:",mut[grep("^Spike_",mut)])),collapse = ",") # Making the spike string similar to the stings to which it is compared
+  return(spike_mut)
+  
+  }
+```
+
+creating a matrix that accounts for differences between the lineage (all lineges X all lineages)
+```{r}
+Distance_matrix<-data.frame()
+for(i in 1:nrow(character_spike_mutations)){
+  difference_values<-c()
+  for(j in 1:nrow(character_spike_mutations)){
+    pairs_to_compare<-character_spike_mutations$Spike_mutations[c(i,j)]
+    distance<- find_difference(pairs_to_compare)
+    difference_values<-append(difference_values,distance)
+    
+  }
+  Distance_matrix<-rbind(Distance_matrix,difference_values)
+}
+rownames(Distance_matrix)<-character_spike_mutations$Pangolineage
+colnames(Distance_matrix)<-character_spike_mutations$Pangolineage
+
+```
+
+assigning the unassigned
+
+```{r}
+denmark_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Denmark_seq_data_mut.csv",";",header=FALSE)
+colnames(denmark_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+india_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Asia_India_seq_data_mut.csv",";",header=FALSE)
+colnames(india_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+southkorea_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Asia_South_Korea_seq_data_mut.csv",";",header=FALSE)
+colnames(southkorea_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+germany_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Germany_seq_data_mut.csv",";",header=FALSE)
+colnames(germany_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+norway_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Norway_seq_data_mut.csv",";",header=FALSE)
+colnames(norway_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+spain_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_spain_seq_data_mut.csv",";",header=FALSE)
+colnames(spain_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+uk_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_United_Kingdom_seq_data_mut.csv",";",header=FALSE)
+colnames(uk_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+canada_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/North_America_Canada_seq_data_mut.csv",";",header=FALSE)
+colnames(canada_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+usa_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/North_America_USA_seq_data_mut.csv",";",header=FALSE)
+colnames(usa_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+australia_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Oceania_Australia_seq_data_mut.csv",";",header=FALSE)
+colnames(australia_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+
+ten_country_mut_data<-list(india_mut_df,southkorea_mut_df,denmark_mut_df,germany_mut_df,norway_mut_df,spain_mut_df,uk_mut_df,canada_mut_df,usa_mut_df,australia_mut_df)
+names(ten_country_mut_data)<-c("india","south_korea","denmark","germany","norway","spain","uk","canada","usa","australia")
+
+```
+
+# function to get the unassigned from the data from the dataframe and naming it uniquely
+```{r}
+find_unassigned<-function(in_data_frame,country_name){
+  in_data_frame$Pango_lineage<-gsub("\\([^\\)]+\\)","",in_data_frame$Pango_lineage) #removing  parentheses and it's contents like (consensus call)
+  unassigned_df<-in_data_frame[in_data_frame$Pango_lineage %in% remove,] #extracting Unassigned, other entries
+  if(nrow(unassigned_df)!=0){
+    unassigned_df$Pango_lineage<-paste(seq(1,nrow(unassigned_df)),country_name,sep = "_") # adding number and the country name to pango_lineage
+    unassigned_df$aa_mut<-unlist(strsplit(gsub("[()]","",unassigned_df$aa_mut),","))
+    return(unassigned_df)
+  }
+  
+}
+```
+
+Unassigned df for countries
+```{r}
+unassigned_df_country<-data.frame()
+for(i in names(ten_country_mut_data)){
+  unassigned_df<-find_unassigned(ten_country_mut_data[[i]],i)
+  if(! is.null(unassigned_df)){
+    unassigned_df$aa_mut<-unlist(lapply(unassigned_df$aa_mut,get_spike)) # just getting the spike mutations and transforming the string
+    unassigned_df_country<-rbind(unassigned_df_country,unassigned_df)
+  }
+}
+```
+
+creating a matrix with unassigned and lineage mutations
+```{r}
+assign_unassigned<-function(unassigned_df_country){
+Distance_matrix_unassigned<-data.frame()
+for(i in 1:nrow(unassigned_df_country)){
+  difference_values<-c()
+  for(j in 1:nrow(character_spike_mutations)){
+    pairs_to_compare<-list(unassigned_df_country$aa_mut[i],character_spike_mutations$Spike_mutations[j])
+    distance<- find_difference(pairs_to_compare)
+    difference_values<-append(difference_values,distance)
+    
+  }
+  Distance_matrix_unassigned<-rbind(Distance_matrix_unassigned,difference_values)
+}
+rownames(Distance_matrix_unassigned)<-unassigned_df_country$Pango_lineage
+colnames(Distance_matrix_unassigned)<-character_spike_mutations$Pangolineage
+#write.csv(Distance_matrix_unassigned,file="Unassigned_lineage_spikemut_differences.csv")
+return(Distance_matrix_unassigned)
+}
+```
+
+Assigning the unassigned based on the minimum difference
+```{r}
+Distance_matrix_unassigned<-assign_unassigned(unassigned_df_country)
+assign_unassign<-data.frame()
+for(i in 1:nrow(Distance_matrix_unassigned)){
+  unassigned<-rownames(Distance_matrix_unassigned[i,])
+  assigned_names<-paste(colnames(Distance_matrix_unassigned)[which(Distance_matrix_unassigned[i,]==min(Distance_matrix_unassigned[i,]))],collapse = " | ")
+  assign_unassign<-rbind(assign_unassign,data.frame(unassigned,assigned_names,min(Distance_matrix_unassigned[i,])))
+}
+colnames(assign_unassign)<-c("unassigned","possible_assignment","pairwise_distance")
+write.csv(assign_unassign,file="unassigned_possibleassignment.csv")
+```
+
+# Testing the method with known
+With only the mutations of a lineage which has got a pango lineage assigned it is tested if through the method the name of the lineage is obtained. unfortunately the method doesnt work well because the number of muations for a lineage from the Downloaded GISAID data is lesser to the number of mutations for a lineage obtained from the getMutationsByLineage function. 
+```{r}
+# creating the test df
+test_df<-data.frame()
+for(i in names(ten_country_mut_data)){
+  interest<-ten_country_mut_data[[i]][c(1,nrow(ten_country_mut_data[[i]])),c(5,6)] #Taking the lineage and mutation data from the first and last entry  of each of the 10 countries
+  interest$Pango_lineage<-paste(i,interest$Pango_lineage,sep = "_") # pasting the country name along with the lineage so they stay unique
+  test_df<-rbind(test_df,interest)
+  
+}
+test_df$aa_mut<-unlist(lapply(test_df$aa_mut,get_spike)) # getting the spike mutations and transforming it
+dist_matrix<-assign_unassigned(test_df)
+```
+The above doesn't work and hence chucking all those.
+# Trying to map lineages based on the mutations obtained using the outbreakinfo function. Removing the variants.
+Lineage mapping based on the characteristics mutation. 
+```{r}
+#character_spike_mutations1<-character_spike_mutations #making a copy
+character_spike_mutations<-character_spike_mutations1
+cat("The size of input lineage_spikemut",nrow(character_spike_mutations))
+alias_df<-data.frame(matrix(nrow = 0,ncol = 3))
+colnames(alias_df)<-c("pango_lineage","parental_lineage","jaccard_value")
+variants_study<-c() # to collect the names of the main variants
+imp_var_list<-readLines("GISAID_VOI_VOC_VOM_list.txt")
+for(i in imp_var_list){
+  merge_into<-unlist(strsplit(i,"[+]"))[1] # variant preceding the plus is the main variant 
+  variants_study<-append(variants_study,merge_into) 
+  found_entries<-grep(paste("^",unlist(strsplit(i,"[+]")),sep = "",collapse = "$|"),character_spike_mutations$Pangolineage) 
+  cat("merge into",merge_into,"found entries",length(found_entries),"\n")
+  if(length(found_entries)>0){
+  alias_df<-rbind(alias_df,data.frame(pango_lineage=character_spike_mutations$Pangolineage[c(found_entries)],parental_lineage=rep(merge_into,length(found_entries)),jaccard_value=rep(1,length(found_entries))))
+  
+  character_spike_mutations<-character_spike_mutations[-c(found_entries),]
+  }
+}
+cat("size of alias_df",nrow(alias_df),"\n")
+cat("size of lineage_spikemut df",nrow(character_spike_mutations),"\n")
+```
+
+```{r}
+sink("char_mapping_lineages_log.txt")
+lineage_alias_char<-mapping_lineages(character_spike_mutations,alias_df)
+write.csv(lineage_alias_char,file = "char_lineage_mapped.csv")
+sink()
+```
+
+
+## Getting the sequence of all the countries
+
+```{r}
+india_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Asia_India_seq_data_esscol.csv",";",header=FALSE)
+colnames(india_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+south_korea_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Asia_South_Korea_seq_data_esscol.csv",";",header=FALSE)
+colnames(south_korea_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+denmark_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Europe_Denmark_seq_data_esscol.csv",";",header=FALSE)
+colnames(denmark_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+germany_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Europe_Germany_seq_data_esscol.csv",";",header=FALSE)
+colnames(germany_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+spain_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Europe_Spain_seq_data_esscol.csv",";",header=FALSE)
+colnames(spain_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+norway_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Europe_Norway_seq_data_esscol.csv",";",header=FALSE)
+colnames(norway_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+uk_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Europe_United_Kingdom_seq_data_esscol.csv",";",header=FALSE)
+colnames(uk_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+canada_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/North_America_Canada_seq_data_esscol.csv",";",header=FALSE)
+colnames(canada_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+usa_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/North_America_USA_seq_data_esscol.csv",";",header=FALSE)
+colnames(usa_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+australia_seq_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_ess_data/Oceania_Australia_seq_data_esscol.csv",";",header=FALSE)
+colnames(australia_seq_df)<-c("Strain","Virus name","GISAID ID", "Collected date","Location","Seq length","Lineage","Seq")
+
+ten_country_seq_data<-list(india_seq_df,south_korea_seq_df,denmark_seq_df,germany_seq_df,norway_seq_df,spain_seq_df,uk_seq_df,canada_seq_df,usa_seq_df,australia_seq_df)
+names(ten_country_seq_data)<-c("india","south_korea","denmark","germany","norway","spain","uk","canada","usa","australia")
+
+```
+
+## Get the unassigned and the sequence.
+```{r}
+find_unassigned_seq<-function(in_data_frame){
+  in_data_frame$Lineage<-gsub("\\([^\\)]+\\)","",in_data_frame$Lineage) #removing  parentheses and it's contents like (consensus call)
+  unassigned_df_seq<-in_data_frame[in_data_frame$Lineage %in% remove,c(3,8)] #extracting Unassigned then their gisaid id and sequence
+
+    return(unassigned_df_seq)
+  
+  
+}
+
+unassigned_seq_df_country<-data.frame()
+for(i in names(ten_country_seq_data)){
+  ten_country_seq_data[[i]]$Lineage[ten_country_seq_data[[i]]$Lineage==""]<-"Unassigned"
+  unassigned_seq_df<-find_unassigned_seq(ten_country_seq_data[[i]])
+  if(! is.null(unassigned_seq_df)){
+    
+    unassigned_seq_df_country<-rbind(unassigned_seq_df_country,unassigned_seq_df)
+  }
+}
+
+for(i in 1:nrow(unassigned_seq_df_country)){
+      write.fasta(unassigned_seq_df_country$Seq[i],unassigned_seq_df_country$`GISAID ID`[i],"unassigned_sequences.fasta",open = "a") #writing to fasta file
+      
+    }
+
+```
+
+```{r}
+# creating the test_seq df
+test_seq_df<-data.frame()
+for(i in names(ten_country_seq_data)){
+  interest<-ten_country_seq_data[[i]][c(1,nrow(ten_country_seq_data[[i]])),c(7,8)] #Taking the lineage and seq data from the first and last entry  of each of the 10 countries
+  interest$Lineage<-paste(i,interest$Lineage,sep = "_") # pasting the country name along with the lineage so they stay unique
+  test_seq_df<-rbind(test_seq_df,interest)
+  
+}
+for(i in 1:nrow(test_seq_df)){
+  write.fasta(test_seq_df$Seq[i],test_seq_df$Lineage[i],"test_sequences.fasta",open = "a") #writing to fasta file
+}
+```
+

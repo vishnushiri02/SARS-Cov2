@@ -1,0 +1,679 @@
+---
+title: "lineage_fusing"
+output: html_document
+date: "2023-11-14"
+---
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(gridExtra)
+library(ggplot2)
+library(scales)
+library(lubridate)
+library(ggpubr)
+library(dplyr)
+library(tidyverse)
+library(plotly)
+library(DescTools)
+library(ggpubr)
+```
+
+# Reading the data
+The data - lineage and the corresponding mutations are present in the ten_country_mut_data/ten_country_lineage_mut.csv. The csv has ";" as field separator
+```{r}
+lineage_mut<-read.csv("ten_country_mut_data/ten_country_lineage_mut.csv",";",header=FALSE)
+colnames(lineage_mut)<-c("Pango_lineage","aa_mut")
+nrow(lineage_mut)
+```
+
+# combine all the mutations corresponding to a lineage
+For a particular lineage the AA_substitution column is not always identical. So we combine all the AA_substitution pertaining to a lineage. 
+```{r}
+#combine_all_mut<-function(lineage_mut){
+lineage_mut$Pango_lineage<-gsub("\\([^\\)]+\\)|\\s+","",lineage_mut$Pango_lineage) #removing  parentheses and it's contents like (consensus call)
+lineage_mut$Pango_lineage[lineage_mut$Pango_lineage=="" | lineage_mut$Pango_lineage=="unassigned" | lineage_mut$Pango_lineage=="other" | lineage_mut$Pango_lineage=="Other"]<-"Unassigned"
+uniq_lineage<-unique(lineage_mut$Pango_lineage)
+lineage_mut_com<-data.frame()
+for(i in uniq_lineage){
+  all_mut<-unique(c(unlist(strsplit(lineage_mut[lineage_mut$Pango_lineage==i,2],",")))) #combining the mutations
+  spike_mut<-all_mut[grep("^Spike_",all_mut)] # extracting the spike mutations alone
+  
+  lineage_mut_com<-rbind(lineage_mut_com,data.frame(i,paste(all_mut,collapse = ","),paste(spike_mut,collapse = ",")))
+  
+}
+colnames(lineage_mut_com)<-c("Pango_lineage","All_mutations","Spike_mutations")
+
+ lineage_spikemut<-lineage_mut_com[order(lineage_mut_com$Pango_lineage),c(1,3)] #considering only the spike mutations and pangolineage
+ lineage_spikemut1<-lineage_spikemut #making a copy
+# return(lineage_mut_com)
+# }
+
+```
+
+# Excluding VOC/VOI/VUM
+A list was taken from the file downloaded from GISAID ( From the Downloads menu Clade/Lineage, Variants was downloaded). List of VOC/VOI/VUM were taken from them. Entries of these lineages/variants in lineages_spikemut df is going to be removed and these entries are going to be explicitly assigned in the alias_df. Note: make sure that in the input text file lines regarding sublineage is first that is line regarding BA.2.75 comes in front of lines with BA.*, so that important sublineages are captured properly
+```{r}
+lineage_spikemut<-lineage_spikemut1
+cat("The size of input lineage_spikemut",nrow(lineage_spikemut))
+alias_df<-data.frame(matrix(nrow = 0,ncol = 3))
+colnames(alias_df)<-c("pango_lineage","parental_lineage","jaccard_value")
+variants_study<-c() # to collect the names of the main variants
+imp_var_list<-readLines("GISAID_VOI_VOC_VOM_list.txt")
+for(i in imp_var_list){
+  merge_into<-unlist(strsplit(i,"[+]"))[1] # variant preceding the plus is the main variant 
+  variants_study<-append(variants_study,merge_into) 
+  found_entries<-grep(paste("^",unlist(strsplit(i,"[+]")),sep = "",collapse = "$|"),lineage_spikemut$Pango_lineage) 
+  cat("merge into",merge_into,"found entries",length(found_entries),"\n")
+  if(length(found_entries)>0){
+  alias_df<-rbind(alias_df,data.frame(pango_lineage=lineage_spikemut$Pango_lineage[c(found_entries)],parental_lineage=rep(merge_into,length(found_entries)),jaccard_value=rep(1,length(found_entries))))
+  
+  lineage_spikemut<-lineage_spikemut[-c(found_entries),]
+  }
+}
+cat("size of alias_df",nrow(alias_df),"\n")
+cat("size of lineage_spikemut df",nrow(lineage_spikemut),"\n")
+
+```
+
+```{r}
+mapping_lineages<-function(lineage_cmut,alias_df){ #taking the dataframe with lineage and mutation
+cat("I am here again \n ")
+alias_df_temp<-data.frame(matrix(nrow = 0,ncol = 3))
+colnames(alias_df_temp)<-c("pango_lineage","parental_lineage","jaccard_value")
+colnames(lineage_cmut)<-c("lineage","mutations")
+######Fun1#####getting the closely related chunks of one main lineage####
+
+chunk_lineage<-function(lineage_cmut,alias_df){ #pass the lineage and the mutation data
+  cat("chunking the lineage and sub lineage \n")
+temp_df<-data.frame() #temp dataframe
+temp_li<-c()
+cat("the size of alias_df",nrow(alias_df),"\n")
+
+
+temp_df<-lineage_cmut[1,] #Considering the first element
+lineage_cmut<-lineage_cmut[-1,] #removing the first element row from the input df 
+cat("first element is ",temp_df$lineage[1],"\n")
+main_lineage_pat<-paste("^",unlist(strsplit(as.character(temp_df$lineage[1]),"[.]"))[1],"[.]|^",unlist(strsplit(as.character(temp_df$Pango_lineage[1]),"[.]"))[1],"$",sep = "") #name/pattern of the main lineage
+cat("Main Lineage being considered is :",main_lineage_pat,"\n")
+
+ if(nrow(lineage_cmut)!=0){
+   
+ for(i in 1:nrow(lineage_cmut)){
+   
+    if(is.na(lineage_cmut$lineage[i])==FALSE && grepl(main_lineage_pat,lineage_cmut$lineage[i])==TRUE)
+      {
+       temp_df<-rbind(temp_df,lineage_cmut[i,])
+       temp_li<-c(temp_li,i)
+     }
+ }
+ }else if(nrow(lineage_cmut)==0 && nrow(temp_df)==1)
+   {
+  cat("no more to process\n")
+   
+  if(length(unlist(strsplit(as.character(temp_df$lineage[1]),"[.]")))==1) # If the lineage has just one char in name it is the parental lineage
+  {
+    df2<-data.frame(pango_lineage=temp_df$lineage[1],parental_lineage=temp_df$lineage[1],jaccard_value=1)
+    row.names(df2)<-c(df2$pango_lineage)
+    alias_df<-rbind(alias_df,df2)
+  }
+  else
+  {
+    df2<-data.frame(pango_lineage=temp_df$lineage[1],parental_lineage=temp_df$lineage[1],jaccard_value=-1) 
+    row.names(df2)<-c(df2$pango_lineage)
+    alias_df<-rbind(alias_df,df2)
+  }
+      
+       temp_df<-temp_df[-1]
+ 
+    
+ 
+ cat(nrow(alias_df))
+ return(alias_df)
+ 
+}
+ 
+if(length(temp_li)>0 && length(temp_df)>1)
+{
+  lineage_cmut<-lineage_cmut[-c(temp_li),]
+  cat("The temp_df going into long_sublineage function\n")
+  cat(temp_df$lineage)
+   cat("calling long_sublineage\n")
+   long_sublineage(temp_df,lineage_cmut,alias_df,alias_df_temp)
+   
+ }
+ else
+{
+   cat("There are no sublineages calling chunk_lineage again\n")
+  if(length(unlist(strsplit(as.character(temp_df$lineage[1]),"[.]")))==1)
+  {
+    df2<-data.frame(pango_lineage=temp_df$lineage[1],parental_lineage=temp_df$lineage[1],jaccard_value=1)
+    row.names(df2)<-c(df2$pango_lineage)
+    alias_df<-rbind(alias_df,df2)
+  }
+  else
+  {
+    df2<-data.frame(pango_lineage=temp_df$lineage[1],parental_lineage=temp_df$lineage[1],jaccard_value=-1)
+    row.names(df2)<-c(df2$pango_lineage)
+    alias_df<-rbind(alias_df,df2)
+  }
+  
+  
+  temp_df<-temp_df[-1]
+  chunk_lineage(lineage_cmut,alias_df)
+ }
+}
+
+#########################################################################################
+
+##########finding the longest character lineage############################
+long_sublineage <- function(temp_df,lineage_cmut,alias_df,alias_df_temp){
+longlineage_df<-data.frame()
+longlinage_vec<-c()
+cat("in function long_sublineage \n")
+cat("the size of alias_df",nrow(alias_df),"\n")
+  max<-0
+
+for(i in seq(1,nrow(temp_df))){
+
+lineage_length<-length(unlist(strsplit(as.character(temp_df$lineage[i]),"[.]")))
+#cat(temp_df$lineage[i],":",lineage_length)
+  if(max<lineage_length){
+
+    max<-lineage_length
+    longlineage_vec<-i
+
+
+    }else if(max==lineage_length){ #multiple long lineages
+
+
+ longlineage_vec<-append(longlineage_vec,i)
+
+    }
+}
+for(i in longlineage_vec){
+  longlineage_df<-rbind(longlineage_df,temp_df[i,])
+}
+cat("The final long lineage df \n")
+cat(longlineage_df$lineage)
+
+
+  if(lineage_length==1){
+    cat("lineages are of length 1 - parental lineages \n")
+    df2<-data.frame(pango_lineage=longlineage_df$lineage,parental_lineage=longlineage_df$lineage,jaccard_value=rep(1,length(longlineage_df$lineage)))
+    row.names(df2)<-c(df2$pango_lineage)
+    alias_df<-rbind(alias_df,df2)
+    longlineage_df<-data.frame()
+  }
+
+temp_df<-temp_df[-c(longlineage_vec),] #Removing the long lineages from temp_dict
+
+if(nrow(longlineage_df)==0 && nrow(temp_df)==0){
+  cat("All lineages of the clade is processed......moving to next clade \n")
+  chunk_lineage(lineage_cmut,alias_df)
+}else{
+##call match_rbind##
+cat("calling match_rbind \n")
+  match_merge(longlineage_df,temp_df,lineage_cmut,alias_df,alias_df_temp)
+}
+}
+
+# #############################################################################
+match_merge <- function(longlineage_df,temp_df,lineage_cmut,alias_df,alias_df_temp)
+{
+
+  cat("In match merge \n")
+  cat("the size of alias_df",nrow(alias_df),"\n")
+  #tmp_list<-c()
+  ll_len<-nrow(longlineage_df)
+  cat(ll_len)
+  
+  while(nrow(longlineage_df)>0)
+  {
+    alias_df_temp_loc<-c()
+    cat("The lineage is:",as.character(longlineage_df$lineage[1],"\n"))
+    pat_len<-length(unlist(strsplit(as.character(longlineage_df$lineage[1]),"[.]")))
+    pat<-paste(head(unlist(strsplit(as.character(longlineage_df$lineage[1]),"[.]")),pat_len-1),collapse = ".") # Forming the pat by leaving out the last character in the sting.
+    cat("\nThe pattern is",pat,"\n")
+    cat("checking for the neighbours in longlineage df\n.............\n")
+    longlineage_neighbours_jaccard<-find_jaccard(paste("^",pat,".",sep = ""),longlineage_df)
+        
+    if(identical(longlineage_neighbours_jaccard[["neighbours"]],"0")!=TRUE && longlineage_neighbours_jaccard[["jaccard_value"]]<0.5) # if the find_jaccard return value satisfies the condition
+    {
+      cat("Neighbours found\n")
+      neighbours_list<-c(unlist(strsplit(longlineage_neighbours_jaccard[["neighbours"]],",")))
+      cat("The neighbours are",neighbours_list,"\n")
+      if(nrow(alias_df_temp)>0)
+      {
+        cat("Checking if the lineage and neighbors are present in alias_df_temp")
+      for(i in neighbours_list)
+      {
+        alias_df_temp_loc<-append(alias_df_temp_loc,grep(paste("^",i,"$",sep=""),alias_df_temp[,2])) #checking if the neighbor string is present in alias_df_temp parental_lineage column
+      }
+      }
+      neighbour_mutations<-paste(Reduce(union,lapply(longlineage_df$mutations[c(longlineage_neighbours_jaccard[["neighbour_loc"]])],input_ready)),collapse = ",") #combining mutations of the neighbors
+      cat("search in temp_df for the clade's parental lineage \n") 
+      parental_lineage<-find_parental(neighbour_mutations,pat,temp_df) #searching for the parental lineage of these neighboring lineages
+              
+      if(!is.null(parental_lineage))
+      {
+        cat("parental lineage found \n")
+        parental_sublineage_mut<-paste(union(unlist(strsplit(temp_df$mutations[c(parental_lineage[["location"]])],",")),unlist(strsplit(neighbour_mutations,","))),collapse = ",") #combining the mutations of the parental and the nighbouring sublineages
+        if(length(unlist(strsplit(parental_lineage[["name"]],"[.]")))>1) # If the found parental lineages has a long pangolin lineage string then there is more scope for mapping so storing the neighbors with the provisional parental_lineages to alias_df_temp
+        {
+          cat(length(longlineage_neighbours_jaccard[["neighbour_loc"]]))
+          df2<-data.frame(pango_lineage=longlineage_df$lineage[c(longlineage_neighbours_jaccard[["neighbour_loc"]])],parental_lineage=rep(parental_lineage[["name"]],length(longlineage_neighbours_jaccard[["neighbour_loc"]])),jaccard_value=rep(parental_lineage[["jaccard_value"]],length(longlineage_neighbours_jaccard[["neighbour_loc"]])))
+          row.names(df2)<-c(df2$pango_lineage)
+          alias_df_temp<-rbind(alias_df_temp,df2)
+          
+          if(length(alias_df_temp_loc)!=0)
+          {
+            alias_df_temp[alias_df_temp_loc,2]<-parental_lineage[["name"]] #changing parentnal lineage from neighbors to the parentnal lineage of the neighbors
+            alias_df_temp[alias_df_temp_loc,3]<-parental_lineage[["jaccard_value"]] # and the corresponding jaccard value
+          }
+          temp_df$mutations[parental_lineage[["location"]]]<-parental_sublineage_mut # replacing the aa_mutations for the found parental lineage with the aa_mutations that contains the mutations of the neighbours too
+          longlineage_df<-longlineage_df[-c(longlineage_neighbours_jaccard[["neighbour_loc"]]),]
+          next
+        } else if(length(unlist(strsplit(parental_lineage[["name"]],"[.]")))==1)
+        {
+          df2<-data.frame(pango_lineage=longlineage_df$lineage[c(longlineage_neighbours_jaccard[["neighbour_loc"]])],parental_lineage=rep(parental_lineage[["name"]],length(longlineage_neighbours_jaccard[["neighbour_loc"]])),jaccard_value=rep(parental_lineage[["jaccard_value"]],length(longlineage_neighbours_jaccard[["neighbour_loc"]])))
+          row.names(df2)<-c(df2$pango_lineage)
+          alias_df<-rbind(alias_df,df2)
+          longlineage_df<-longlineage_df[-c(longlineage_neighbours_jaccard[["neighbour_loc"]]),]
+          if(length(alias_df_temp_loc)!=0) 
+          {
+            df2<-data.frame(pango_lineage=alias_df_temp[alias_df_temp_loc,1],parental_lineage=rep(parental_lineage[["name"]],length(alias_df_temp_loc)),jaccard_value=rep(parental_lineage[["jaccard_value"]],length(alias_df_temp_loc))) 
+            row.names(df2)<-c(df2$pango_lineage)
+            alias_df<-rbind(alias_df,df2)
+            alias_df_temp<-alias_df_temp[-c(alias_df_temp_loc),]
+          }
+            next
+        }
+      } 
+      else 
+      {
+        cat("no parental lineage found for the clade \n")
+        df2<-data.frame(pango_lineage=longlineage_df$lineage[c(longlineage_neighbours_jaccard[["neighbour_loc"]])],parental_lineage=rep(paste(pat,"x",sep="."),length(longlineage_neighbours_jaccard[["neighbour_loc"]])),jaccard_value=rep(longlineage_neighbours_jaccard[["jaccard_value"]],length(longlineage_neighbours_jaccard[["neighbour_loc"]])))
+        row.names(df2)<-c(df2$pango_lineage) #parental lineage of the neighbours is pat concatinated with x
+        alias_df<-rbind(alias_df,df2)
+        
+        if(length(alias_df_temp_loc)!=0)
+        {
+          df2<-data.frame(pango_lineage=alias_df_temp[alias_df_temp_loc,1],parental_lineage=rep(paste(pat,"x",sep="."),length(alias_df_temp_loc)),jaccard_value=rep(longlineage_neighbours_jaccard[["jaccard_value"]],length(alias_df_temp_loc)))
+          row.names(df2)<-c(df2$pango_lineage)
+          alias_df<-rbind(alias_df,df2)
+          alias_df_temp<-alias_df_temp[-c(alias_df_temp_loc),]
+        }
+        longlineage_df<-longlineage_df[-c(longlineage_neighbours_jaccard[["neighbour_loc"]]),]
+        next
+      }
+    } 
+    else
+    {
+      cat("No clade neighbours found...looking for parental lineage \n")
+      parental_lineage<-find_parental(longlineage_df$mutations[1],pat,temp_df)
+      cat("looking if the lineage is present in alias_temp_df \n")
+      if(nrow(alias_df_temp)>0)
+      {
+      alias_df_temp_loc<-grep(paste("^",as.character(longlineage_df$lineage[1]),"$",sep=""),alias_df_temp[,2])
+      }
+      if(!is.null(parental_lineage))
+      {
+        cat("parental lineage found \n")
+        cat("the jaccard value",parental_lineage[["jaccard_value"]],"\n")
+        parental_sublineage_mut<-paste(union(unlist(strsplit(temp_df$mutations[c(parental_lineage[["location"]])],",")),unlist(strsplit(longlineage_df$mutations[1],","))),collapse = ",")
+        if(length(unlist(strsplit(parental_lineage[["name"]],"[.]")))>1)
+        {
+          df2<-data.frame(pango_lineage=longlineage_df$lineage[1],parental_lineage=rep(parental_lineage[["name"]],1),jaccard_value=rep(parental_lineage[["jaccard_value"]],1))
+          row.names(df2)<-c(df2$pango_lineage)
+         alias_df_temp<-rbind(alias_df_temp,df2)
+          temp_df$mutations[parental_lineage[["location"]]]<-parental_sublineage_mut # replacing the aa_mutations for the found parental lineage with the aa_mutations that contains the mutations of the longlineage_df$lineage[1] too
+          if(length(alias_df_temp_loc)!=0)
+          {
+            alias_df_temp[alias_df_temp_loc,2]<-parental_lineage[["name"]]
+            alias_df_temp[alias_df_temp_loc,3]<-parental_lineage[["jaccard_value"]]
+          }
+          longlineage_df<-longlineage_df[-1,]
+          next
+        } 
+        else if(length(unlist(strsplit(parental_lineage[["name"]],"[.]")))==1)
+        {
+          df2<-data.frame(pango_lineage=longlineage_df$lineage[1],parental_lineage=parental_lineage[["name"]],jaccard_value=parental_lineage[["jaccard_value"]])
+          row.names(df2)<-c(df2$pango_lineage)
+          alias_df<-rbind(alias_df,df2)
+          if(length(alias_df_temp_loc)!=0)
+          {
+            df2<-data.frame(pango_lineage=alias_df_temp[alias_df_temp_loc,1],parental_lineage=rep(parental_lineage[["name"]],length(alias_df_temp_loc)),jaccard_value=rep(parental_lineage[["jaccard_value"]],length(alias_df_temp_loc)))
+            row.names(df2)<-c(df2$pango_lineage)
+            alias_df<-rbind(alias_df,df2)
+            alias_df_temp<-alias_df_temp[-(alias_df_temp_loc),]
+          }
+          longlineage_df<-longlineage_df[-1,]
+          next
+        }
+      } 
+      else
+      {
+        cat("no parental or no neighbours found \n")
+        df2<-data.frame(pango_lineage=longlineage_df$lineage[1],parental_lineage=longlineage_df$lineage[1],jaccard_value=-1)#mapping to itself
+        row.names(df2)<-c(df2$pango_lineage)
+        alias_df<-rbind(alias_df,df2)
+        if(length(alias_df_temp_loc)!=0)
+        {
+          df2<-data.frame(pango_lineage=alias_df_temp$pango_lineage[alias_df_temp_loc],parental_lineage=alias_df_temp$parental_lineage[alias_df_temp_loc],jaccard_value=alias_df_temp$jaccard_value[alias_df_temp_loc]) #transferring lineages for which longlinegae_df$lineage[1] is parent to the alias_df
+          row.names(df2)<-c(df2$pango_lineage)
+          alias_df<-rbind(alias_df,df2)
+          alias_df_temp<-alias_df_temp[-(alias_df_temp_loc),]
+        }
+        longlineage_df<-longlineage_df[-1,]
+        
+      }
+    }
+  }
+
+  # print("the alias_df_temp\n")
+  # print(alias_df_temp)
+  if(nrow(longlineage_df)==0)
+  {
+    
+    if(nrow(temp_df)==0 && nrow(alias_df_temp)!=0)
+    {
+      cat("something is wrong...stop the execution \n")
+    }
+    else if(nrow(temp_df)!=0)
+    {
+      cat("now the size of alias_df is",nrow(alias_df),"calling long_sublineage again \n")
+      long_sublineage(temp_df,lineage_cmut,alias_df,alias_df_temp)
+    }
+    else
+    {
+      cat("entries in longlineage_df",nrow(longlineage_df),"\n")
+      cat("entries in alias_df_temp",nrow(alias_df_temp),"\n")
+      cat("entries in temp_df",nrow(temp_df),"\n")
+      cat("So calling chunking function\n")
+      cat(alias_df$pango_lineage,"\n")
+      chunk_lineage(lineage_cmut,alias_df)
+
+
+    }
+  }
+  
+}
+
+
+ chunk_lineage(lineage_cmut,alias_df)
+}
+
+```
+
+## Writes the output and the log
+```{r}
+sink("mapping_lineages_log.txt")
+lineage_alias<-mapping_lineages(lineage_spikemut,alias_df)
+write.csv(lineage_alias,file = "lineage_mapped.csv")
+sink()
+
+```
+
+
+## all the functions used 
+```{r}
+input_ready<-function(x) unlist(strsplit(x,",")) # splits the input string by comma and unlists it
+
+jaccard <- function(a) { # finds the jaccard value for the input lists
+  intersection <- length(Reduce(intersect,a))
+  union_lists<-length(Reduce(union,a))
+    #intersection = length(intersect(a, b))
+    #union = length(a) + length(b) - intersection
+    #union_lists=length(union(a,b))
+    return ((union_lists-intersection)/union_lists) #distance between the comparing the sets
+}
+
+find_jaccard<-function(pat,search_df,pat_mutations=0){
+      search_lineage_loc<-grep(pat,search_df$lineage)
+      if(pat_mutations==0){ #finding neighbours
+        
+      if(identical(search_lineage_loc,integer(0))!=TRUE && length(search_lineage_loc)>1){ 
+        clade_neighbour<-lapply(search_df$mutations[c(search_lineage_loc)], input_ready)
+        jaccard_value<-jaccard(clade_neighbour)
+        neighbours<-paste(search_df$lineage[c(search_lineage_loc)],collapse = ",")
+        neighbour_loc<-search_lineage_loc
+        
+
+        
+      } else {
+        neighbours<-"0"
+        jaccard_value<--1
+        neighbour_loc<-0
+      }
+      } else{
+        if(identical(search_lineage_loc,integer(0))!=TRUE){
+          cat("\n possible parent present \n")
+        clade_neighbour<-lapply(list(pat_mutations,search_df$mutations[c(search_lineage_loc)]), input_ready)
+        jaccard_value<-jaccard(clade_neighbour)
+        neighbours<-paste(search_df$lineage[c(search_lineage_loc)],collapse = ",")
+        neighbour_loc<-search_lineage_loc
+        
+
+        
+      } else {
+        cat("\n no parental found","\n")
+        neighbours<-"0"
+        jaccard_value<--1
+        neighbour_loc<-0
+      }
+      }
+      result_list<-list("jaccard_value"=jaccard_value,"neighbours"=neighbours,"neighbour_loc"=neighbour_loc)
+        return(result_list)
+}
+
+find_parental<-function(mutations,pat,parental_df){
+  pat_len<-length(unlist(strsplit(pat,"[.]")))
+  while(pat_len>=1)
+  {
+    pat<-paste(head(unlist(strsplit(pat,"[.]")),pat_len),collapse=".") #iteratively reducing the pattern by each iteration
+    cat("searching pattern:",pat,"\n")
+    parental_jaccard<-find_jaccard(paste("^",pat,"$",sep=""),parental_df,pat_mutations=mutations)
+    cat("neighbours =",parental_jaccard[["neighbours"]],"jaccard value= ",parental_jaccard[["jaccard_value"]],"\n")
+    
+    if(parental_jaccard[["neighbours"]]!="0" && parental_jaccard[["jaccard_value"]]<0.5){
+      parental_lineage<-list("name"=parental_jaccard[["neighbours"]],"location"=parental_jaccard[["neighbour_loc"]],"jaccard_value"=parental_jaccard[["jaccard_value"]])
+      return(parental_lineage)
+      break
+    } else {
+      pat_len<-pat_len-1
+    }
+    
+  }
+}
+
+```
+## Adding the alias into the dataframe 
+Also assigns lineage to unassigned entries.
+```{r}
+fill_parental<-function(country_df,lineage_alias){
+alias_list<-c()
+country_df$Pango_lineage<-gsub("\\([^\\)]+\\)|\\s+","",country_df$Pango_lineage) #removing  parentheses and it's contents like (consensus call)
+country_df$Pango_lineage<-gsub("^$","Unassigned",country_df$Pango_lineage)
+
+for(j in 1:nrow(country_df)){ # assigning the unassigned
+    if(country_df$GISAID_ID[j] %in% cov_res$Sequence.name){
+      country_df$Pango_lineage[j]<-cov_res$Lineage[cov_res$Sequence.name==ten_country_mut_data[[i]]$GISAID_ID[j]]
+    }
+
+
+  }
+
+for(i in country_df$Pango_lineage)
+{
+  alias_name<-as.character(lineage_alias$parental_lineage[lineage_alias$pango_lineage==i])
+  
+  cat(paste(i,alias_name,sep=" - "),"\n",file = "out.txt",append=TRUE)
+ 
+  alias_list<-append(alias_list,alias_name)
+}
+
+country_df<-cbind(country_df,"Parental_lineage"=alias_list)
+}
+
+```
+# taking countrywise data
+```{r}
+denmark_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Denmark_seq_data_mut.csv",";",header=FALSE)
+colnames(denmark_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+india_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Asia_India_seq_data_mut.csv",";",header=FALSE)
+colnames(india_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+southkorea_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Asia_South_Korea_seq_data_mut.csv",";",header=FALSE)
+colnames(southkorea_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+germany_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Germany_seq_data_mut.csv",";",header=FALSE)
+colnames(germany_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+norway_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_Norway_seq_data_mut.csv",";",header=FALSE)
+colnames(norway_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+spain_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_spain_seq_data_mut.csv",";",header=FALSE)
+colnames(spain_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+uk_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Europe_United_Kingdom_seq_data_mut.csv",";",header=FALSE)
+colnames(uk_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+canada_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/North_America_Canada_seq_data_mut.csv",";",header=FALSE)
+colnames(canada_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+usa_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/North_America_USA_seq_data_mut.csv",";",header=FALSE)
+colnames(usa_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+australia_mut_df<-read.csv("/Users/vishnushirishyamsaisundar/Documents/Master_Thesis_work/Work/Data_Analysis/ten_country_mut_data/Oceania_Australia_seq_data_mut.csv",";",header=FALSE)
+colnames(australia_mut_df)<-c("Strain","GISAID_ID","Collected_date","Location","Pango_lineage","aa_mut")
+
+ten_country_mut_data<-list(india_mut_df,southkorea_mut_df,denmark_mut_df,germany_mut_df,norway_mut_df,spain_mut_df,uk_mut_df,canada_mut_df,usa_mut_df,australia_mut_df)
+names(ten_country_mut_data)<-c("india","south_korea","denmark","germany","norway","spain","uk","canada","usa","australia")
+
+# reading the result of the cov-lineage from the results to assign the unassigned
+cov_res<-read.csv("unassigned_assigned_pangolin_webapplication.csv")[c(1,2)] #Taking the seq name (GISAID ID), lineage
+```
+
+# Removing inconsistent date data and changing the type of collected_date column and filling the parental lineage column
+```{r}
+
+for(i in names(ten_country_mut_data)){ #goes through each country data frame
+  indices<-c()
+  cat("presently in ",i,"\n")
+  for(j in 1:length(ten_country_mut_data[[i]]$Collected_date)){
+    date_input<-ten_country_mut_data[[i]]$Collected_date[j]
+    if(length(unlist(strsplit(date_input,"-")))==2 || length(unlist(strsplit(date_input,"-")))==1 || date_input==""){
+      indices<-append(indices,j)
+      
+    }
+  }
+  
+  if(length(indices)>0){
+    cat("there are inconsistent data \n")
+    ten_country_mut_data[[i]]<-ten_country_mut_data[[i]][-c(indices),]
+  }
+  
+  ten_country_mut_data[[i]]$Collected_date<-as.Date(ten_country_mut_data[[i]]$Collected_date)
+  
+  ten_country_mut_data[[i]]<-fill_parental(ten_country_mut_data[[i]],lineage_alias)
+}
+```
+
+# Aggregating data month and lineage wise and calculating the frequency of the lineage month wise
+The function multinomCI outputs estimate which is the frequency (monthwise individual lineage count/total seq collected in a month) and also provides the confidence interval for the same. Entries count pertaining to each month year value is passed on to this to compute the results and then these are added to the dataframe. This works if all the 
+```{r}
+ten_country_month_lineage_aggre<-list()
+
+for (i in names(ten_country_mut_data)) {
+  estimate_df<-data.frame()
+  
+  ten_country_month_lineage_aggre[[i]]<-data.frame(ten_country_mut_data[[i]] %>% group_by(format(Collected_date,"%Y-%m"),Parental_lineage) %>% summarise(n=n()))
+  colnames(ten_country_month_lineage_aggre[[i]])<-c("year_month","Parental_lineage","count_of_entries")
+  ten_country_month_lineage_aggre[[i]]$count_of_entries<-as.integer(ten_country_month_lineage_aggre[[i]]$count_of_entries)
+  
+  for(j in unique(ten_country_month_lineage_aggre[[i]]$year_month)){ 
+    estimate_df<-rbind(estimate_df,data.frame(ten_country_month_lineage_aggre[[i]][ten_country_month_lineage_aggre[[i]]$year==j,],data.frame(MultinomCI(ten_country_month_lineage_aggre[[i]]$count_of_entries[ten_country_month_lineage_aggre[[i]]$year_month==j])))) # MultinomCI is fed with count of entries that belong to a month. This function would calculate frequency and CI for each of the count entries
+  }
+  colnames(estimate_df)<-c("year_month","Parental_lineage","count_of_entries","Frequency","l_CI","u_CI")
+  ten_country_month_lineage_aggre[[i]]<-estimate_df
+  
+}
+```
+
+# plotting the aggregated data for VOI/VOC/VUM and unassigned
+Monthly aggregation
+```{r}
+
+plot_li_frequency<-list()
+variants_and_unassigned<-c(variants_study,"Unassigned")
+for(i in names(ten_country_month_lineage_aggre)){
+df<-ten_country_month_lineage_aggre[[i]][ten_country_month_lineage_aggre[[i]]$Parental_lineage %in% variants_and_unassigned,] # just considering VOI/VUM/VOC and. unassigned 
+df$year_month<-as.Date(paste(df$year_month,"01",sep = "-"),"%Y-%m-%d")
+  plot_li_frequency[[i]]<-ggplot(df)+geom_ribbon(aes(year_month,ymax=u_CI,ymin=l_CI,color=Parental_lineage,fill=Parental_lineage),linetype=2,alpha=0.1)+geom_line(aes(year_month,Frequency,color=Parental_lineage,group=Parental_lineage))+scale_y_continuous(labels = scales::percent)+scale_x_date(date_labels = "%b-%y",breaks =seq(min(df$year_month),max(df$year_month),by="2 months") )+ggtitle(paste("Trend in",i))+xlab("Months")+scale_color_manual(values = color_codes)+theme(legend.position = "bottom")+scale_fill_manual(values = color_codes)+geom_point(aes(year_month,Frequency,color=Parental_lineage,group=Parental_lineage))
+}
+
+ ggsave(filename = "Variant_monthly_frequency_trend_CI.pdf",plot = gridExtra::marrangeGrob(plot_li_frequency,nrow=1,ncol=1),device = "pdf", width = 15,height = 7,units = "in" )
+  dev.off()
+  
+```
+
+```{r}
+color_codes<-c("B.1.1.7"="#FF0000","BA.2.75"="#16E2F5","BA.2.86"="#D891EF", "B.1.351"="#9E7BFF","B.1.617.2"="#8B008B","P.1"="#D291BC","B.1.1.529"="#FF00FF","B.1.429"="#F8B88B","B.1.525"="#FF6700","B.1.526"="#C0AF33","B.1.617.1"="#6AFB92","C.37"="#000000","B.1.621"="#98AFC7","P.3"="#0909FF","P.2"="#008080","B.1.640"="#6AA121","EG.5"="#B87333","XBB.1.16"="#B21807","XBB.1.5"="#FF007F","XBB.1.9.1"="#ff5a5a","XBB.1.9.2"="#046307","XBB.2.3"="#66CDAA","CH.1.1"="#728C00","XBB"="#FFA500","Unassigned"="#468499")
+
+color_codes_country<-c("india"="#046307","south_korea"="#FF007F","denmark"="#9E7BFF","germany"="#000000","norway"="#FF6700","spain"="#0909FF","uk"="#98AFC7","canada"="#FF00FF","usa"="#FF0000","australia"="#C0AF33")
+```
+
+## plotting lineages countrywise.
+
+```{r}
+group_countrywise<-function(variants_study){
+plot_li_lineage_frequency<-list()
+for(i in variants_study){ #for each lineage in the variant of study
+  lineage_df<-data.frame()
+  for(j in names(ten_country_month_lineage_aggre)){ #iterating through all the country df to take data regarding lineage i
+    s_df<-ten_country_month_lineage_aggre[[j]][ten_country_month_lineage_aggre[[j]]$Parental_lineage==i,]
+    if(nrow(s_df)!=0){
+    s_df<-cbind(s_df,country=rep(j,nrow(s_df))) # repeating country name in each of the row
+    lineage_df<-rbind(lineage_df,s_df)
+    }
+  }
+  
+  if(nrow(lineage_df)==0){
+    cat("The lineage is ",i,"\n")
+  }else {
+
+lineage_df$year_month<-as.Date(paste(lineage_df$year_month,"01",sep = "-"),"%Y-%m-%d")
+  plot_li_lineage_frequency[[i]]<-ggplot(lineage_df)+geom_ribbon(aes(year_month,ymax=u_CI,ymin=l_CI,color=country,fill=country),linetype=2,alpha=0.1)+geom_line(aes(year_month,Frequency,color=country,group=country))+scale_y_continuous(labels = scales::percent)+scale_x_date(date_labels = "%b-%y",breaks =seq(min(lineage_df$year_month),max(lineage_df$year_month),by="2 months") )+ggtitle(paste("Trend in",i))+xlab("Months")+scale_color_manual(values = color_codes_country)+theme(legend.position = "bottom")+scale_fill_manual(values = color_codes_country)+geom_point(aes(year_month,Frequency,color=country,group=country))
+  
+  } 
+}
+return(plot_li_lineage_frequency)
+}
+
+plot_li_lineage_frequency<-group_countrywise(variants_and_unassigned)
+ ggsave(filename = "Variant_wise_trend_all_countries_CI.pdf",plot = gridExtra::marrangeGrob(plot_li_lineage_frequency,nrow=1,ncol=1),device = "pdf", width = 15,height = 7,units = "in" )
+dev.off()
+```
+## plotting all the lineages other than the variants
+```{r}
+all_parental_lineage<-c(unique(lineage_alias$parental_lineage))
+all_parental_lineage_no_var<-setdiff(all_parental_lineage,variants_and_unassigned)
+no_var_parental_freq_plot<-group_countrywise(all_parental_lineage_no_var)
+ggsave(filename = "Lineages_no_var_freq_countrywise_CI.pdf", plot = gridExtra::marrangeGrob(no_var_parental_freq_plot,nrow=1,ncol=1),device = "pdf", width = 15,height = 6,units = "in" )
+dev.off()
+```
+
+## grouping month wise.
+if needed.
+```{r}
+month_numbers<-list()
+for(i in names(ten_country_mut_data)){
+  month_numbers[[i]]<-data.frame(ten_country_mut_data[[i]] %>% group_by(format(Collected_date,"%Y-%m")) %>% count())
+  colnames(month_numbers[[i]])<-c("Month","number")
+}
+
+```
+
+
+#saving the 10 country mut data in to an Rdata
+
+```{r}
+saveRDS(ten_country_mut_data, file = "ten_country_mut_data.rds")
+```
+
+
