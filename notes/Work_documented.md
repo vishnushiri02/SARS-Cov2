@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1705485322764
+updated: 1705505300109
 created: 1700240700998
 ---
 # Objective
@@ -56,6 +56,7 @@ Summary of the downloaded data
 | **Oceania / Australia**     | 13267                                                | 13257                                               | 5                        | 0,038 %                      |
 
 [[Note on the unassigned|Work_documented#dealing-with-the-unassigned]]
+
 ## Mapping lineages
 
 - Mapping of lineages to their parental lineage is done based on the Pangolin lineage naming string and the spike mutations:
@@ -144,14 +145,14 @@ The big goal is to find the positions under pressure. To obtain this, firstly th
 
 ## Computing the pressure on the position
 
-With the formula (given by Prof.Max) the pressure on each posittion was computed
+With the formula (given by Prof.Max) the pressure on each position was computed
 $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 
 - Where the f(pos,s) is the frequency of the position on time s.
 - $exp^{-k[t-s]}$ is the discount factor - mutation frequencies that occurred [t-s] days ago get discounted by the half life of neutralising antibodies.
 - $k\sim \frac{ln(2)}{45+14}$
 - By suggestion of the Prof. the vector for discount factor was first computed. For this the date range for each of the country_df was found. If the difference between the sart day and the end day is 9 then [t-s] could be in the range 0-9. Hence with this as base the discount factor was computed for [t-s] ranging 0-[difference between the start day to end day in the dataframe]. All these values are stored in a vector.
-- According to the selected $t_0$, $t$ the discount factor was sliced and the corresponding frequency of the particular position in the time suration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
+- According to the selected $t_0$, $t$ the discount factor vector was sliced and the frequency of the particular position in the time duration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
 - This was done for all the RBD positions in a country and repeated for all the 10 countries.
 - The output will have two columns - RBD posisition and the pressure on the position.
 
@@ -178,8 +179,11 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 - The heat map is then plotted on this reshaped dataframe. ![Netsurf output heatmap](assets/plots/netsurf_based_output.png)
 - This was done for the outputs from all 3 tools and the heatmap is saved in different pdfs with ```Work/Data_Analysis/netsurf_based_output.pdf```,```Work/Data_Analysis/dssp_based_output.pdf```,```Work/Data_Analysis/getArea_based_output.pdf```.
 
+> Inference based on netsurf based output:
+> Pos_339,pos_460: Apart from Australia all other contries have high pressure on this position
+> Pos_346,pos_477,pos_478,pos_484,pos_498,Pos_501: Apart from India all other countries have high pressure.
+> pos_375,pos_376,pos_408: Apart from south korea all other countries have high pressure
+
 ```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
-
-
 
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
