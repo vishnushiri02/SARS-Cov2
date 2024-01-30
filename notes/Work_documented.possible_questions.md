@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1705315915317
+updated: 1706599314359
 created: 1701937898390
 ---
 
@@ -31,20 +31,14 @@ australia|13257|13261
 
 - ANS: Jaccard index is not the right way to go about, we have to get the distance, create a distance table based on the spike mutations.
 
-### 4. Where could combining the data on daily basis and then interpolating them to get the missing day data go wrong?
+### 4. Why do we do linear interpolation, why not spline interpolation?
 
 -ANS:
 
-### 5. If data is combined weekly, how should this frequency be distributed among the week to get the week-daily interpolation?
+### 5. Aaccording to Uniprot the RBD region in spike  is 319-541aa ![spike rbd uniprot](assets/Pics/uniprot_spikeRBD.png)
 
--ANS:
-
-### 6. Why do we do linear interpolation, why not spline interpolation?
-
--ANS:
-
-### 7. Aaccording to Uniprot the RBD region in spike  is 319-541aa ![spike rbd uniprot](assets/Pics/uniprot_spikeRBD.png)
 ANS:
 
-### 8. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might changes right due to possible difference in the fold? In that case should we study these positions in each of the VOI?
+### 6. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might change probably due to the difference in the fold.  In that case should we study these positions in each of the VOI?
+
 ANS:

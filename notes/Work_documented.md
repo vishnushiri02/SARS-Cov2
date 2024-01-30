@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1705505300109
+updated: 1706599860070
 created: 1700240700998
 ---
 # Objective
@@ -126,7 +126,7 @@ ten_country_mut_data/* \
 
 ## Finding positions under pressure (BIG GOAL)
 
-The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530)([[question on the position|Work_documented.possible_questions#7-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) in the aa_substitution has to be first calculated and interpolated to get the daily data.
+The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530)([[Question on the position|Work_documented.possible_questions#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) in the aa_substitution has to be first calculated and interpolated to get the daily data.
 ![frequency interpolation](assets/Pics/Frequency_interpolation.png)
 
 - For Each country the mutation data from GISAID has been used as the input.
@@ -139,9 +139,7 @@ The big goal is to find the positions under pressure. To obtain this, firstly th
   > Frequency of pos_373 on 01-01-2022 = $\frac{count\space of\space pos\_373\space on\space 01-01-2022}{Number\space of\space sequences\space on\space 01-01-2022}$
 - To have the frequency data for everyday from Jan 1 2022 - Oct 31 2023, linear [[interpolation|Glossary#interpolation]] is done using the approximate method. The result of the interpolation is added to the corresponding date in the country data_frame.
   
->- [[Question on combining daywise|Work_documented.possible_questions#4-where-could-combining-the-data-on-daily-basis-and-then-interpolating-them-to-get-the-missing-day-data-go-wrong]]
->- [[Question on week-day interpolation|Work_documented.possible_questions#5-if-data-is-combined-weekly-how-should-this-frequency-be-distributed-among-the-week-to-get-the-week-daily-interpolation]]
->- [[Question on the interpolation method|Work_documented.possible_questions#6-why-do-we-do-linear-interpolation-why-not-spline-interpolation]]
+[[Question on interpolation|Work_documented.possible_questions#4-why-do-we-do-linear-interpolation-why-not-spline-interpolation]]
 
 ## Computing the pressure on the position
 
@@ -151,7 +149,7 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 - Where the f(pos,s) is the frequency of the position on time s.
 - $exp^{-k[t-s]}$ is the discount factor - mutation frequencies that occurred [t-s] days ago get discounted by the half life of neutralising antibodies.
 - $k\sim \frac{ln(2)}{45+14}$
-- By suggestion of the Prof. the vector for discount factor was first computed. For this the date range for each of the country_df was found. If the difference between the sart day and the end day is 9 then [t-s] could be in the range 0-9. Hence with this as base the discount factor was computed for [t-s] ranging 0-[difference between the start day to end day in the dataframe]. All these values are stored in a vector.
+- By suggestion of the Prof. the vector for discount factor was first computed. For this the date range for each of the country_df was found. If the difference between the start day and the end day is 9 then [t-s] could be in the range 0-9. Hence with this as base the discount factor was computed for [t-s] ranging 0-[difference between the start day to end day in the dataframe]. All these values are stored in a vector.
 - According to the selected $t_0$, $t$ the discount factor vector was sliced and the frequency of the particular position in the time duration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
 - This was done for all the RBD positions in a country and repeated for all the 10 countries.
 - The output will have two columns - RBD posisition and the pressure on the position.
@@ -159,7 +157,7 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 ## Masking
 
 - The objective of masking to find the exposed positions among the RBD spike positions.
-- To know the exposed residues the solvent accessibility of each of the residues in the spike protein were found. [[question on mutations and solvent accessibility|Work_documented.possible_questions#8-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-changes-right-due-to-possible-difference-in-the-fold-in-that-case-should-we-study-these-positions-in-each-of-the-voi]]
+- To know the exposed residues the solvent accessibility of each of the residues in the spike protein were found. [[Question on solvent acessibility|Work_documented.possible_questions#6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi]]
 - To find solvent accessibility of the protein various tools were utilitsed. This can be found here[[Work_documented.Finding_surface_residues]]
 - From the output of each of the tool Spike RBD surface positions were found. This process was direct in the case of the output from GetArea and Netsurf3.0 but in the case of DSSP, relative solvent accessibility was computed from the absolute solvent accessibility in the dssp output file. Using this computed relative solvent accessibility the surface residues were found.
   
@@ -174,7 +172,7 @@ $\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 ## Visualization of the positions under pressure
 
 - To know how the positions under pressure would differ by country I thought heat map will be the good choice
-- To do this a dataframe was created with a column of all the Spike RBD positions given by the tool. Other 10 columns belonging to each of the 10 countries. These columns contain the pressure for each of the positions that was computed using the mutation . If a position has no record of mutation in a country it is assigned to zero.
+- To do this a dataframe was created with a column of all the exposed Spike RBD positions given by the tool. Other 10 columns belonging to each of the 10 countries. These columns contain the pressure on each of the positions that was computed earlier . If a position has no record of mutation in a country it is assigned to zero.
 - This dataframe is reshaped to make it usable for geom_tile.
 - The heat map is then plotted on this reshaped dataframe. ![Netsurf output heatmap](assets/plots/netsurf_based_output.png)
 - This was done for the outputs from all 3 tools and the heatmap is saved in different pdfs with ```Work/Data_Analysis/netsurf_based_output.pdf```,```Work/Data_Analysis/dssp_based_output.pdf```,```Work/Data_Analysis/getArea_based_output.pdf```.
