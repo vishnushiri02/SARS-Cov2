@@ -2,7 +2,7 @@
 id: xhw6w5ghbjhkzbo7huxzhwg
 title: Possible_questions
 desc: 'This note is regarding all the question that are to be rised to understand the work'
-updated: 1706599314359
+updated: 1706780755936
 created: 1701937898390
 ---
 
@@ -33,12 +33,14 @@ australia|13257|13261
 
 ### 4. Why do we do linear interpolation, why not spline interpolation?
 
--ANS:
+-ANS: In a sparse data using a spline interpolation might give unexpected results which might not be right.
 
 ### 5. Aaccording to Uniprot the RBD region in spike  is 319-541aa ![spike rbd uniprot](assets/Pics/uniprot_spikeRBD.png)
 
-ANS:
+ANS: There are no interesting epitopes before position 330 and after position 530 so it's fine.
 
 ### 6. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might change probably due to the difference in the fold.  In that case should we study these positions in each of the VOI?
 
-ANS:
+ANS: The Mutation doesnt alter the fold to a great extent, if that happens it will affect the function of the protein, so using the wildtype to compute the solvent accessibility is not so bad idea.
+
+### 7.  The computed pressure trend for a position is obtained by calculating pressure at multiple time points. For now pressure is computed every 180 days. The time horizon is not exactly divisible into bins of 180 days. There will be difference in the final bin. Will this be a problem?

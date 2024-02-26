@@ -2,12 +2,12 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1706599860070
+updated: 1708935902291
 created: 1700240700998
 ---
 # Objective
 
-The study is regarding the role of population genetics in the determining the susceptibility to a SARS CoV19 variant.
+Is it possible to predict the positions that are vulnerable for forth coming mutations.
 
 ## Steps in the workflow
 
@@ -126,62 +126,89 @@ ten_country_mut_data/* \
 
 ## Finding positions under pressure (BIG GOAL)
 
-The big goal is to find the positions under pressure. To obtain this, firstly the frequency of each position(RBD spike mutations in position 330-530)([[Question on the position|Work_documented.possible_questions#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) in the aa_substitution has to be first calculated and interpolated to get the daily data.
+The big goal is to find the positions under pressure. To obtain this, firstly the frequency of of mutation on each position of Spike RBD and NTD Epitopes are calculated. (RBD spike mutations in position 330-530, NTD(14-20,140-158,245-264) mutations)([[Question on the position|Work_documented.possible_questions#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) For this the aa_substitution data obtained from GISAID was used.
 ![frequency interpolation](assets/Pics/Frequency_interpolation.png)
+
+**STEPS:**
 
 - For Each country the mutation data from GISAID has been used as the input.
 - This data consist of the lineage, collected date, location of collection, a string of aa_substitution.
-- All the aa_substitution strings that are collected on the same day are considered together. This also gives the number of entries collected in a day = number sequences
-- From these strings the spike RBD mutations are alone extracted using getRBDmut function.
-- The data frame gets reduced to date,number of sequences,spike RBD mutations string.
-- To calculate the frequency for a time step all the possible unique spike RBD mutations present in the country is first compiled.
+- All the aa_substitution strings that are collected on the same day are considered together. This also gives the number of entries collected in a day = number sequences colleceted on a day.
+- From these strings the spike RBD, NTD epitope mutations are alone extracted using getintrmut function.
+- The data frame gets reduced to date,number of sequences,spike RBD/NTD mutations string.
+- To calculate the frequency of a mutation for a time step, all the possible unique spike RBD, NTD mutations present in the country is first compiled.
 - Then the frequency of each of this mutation for a day is calculated.
-  > Frequency of pos_373 on 01-01-2022 = $\frac{count\space of\space pos\_373\space on\space 01-01-2022}{Number\space of\space sequences\space on\space 01-01-2022}$
-- To have the frequency data for everyday from Jan 1 2022 - Oct 31 2023, linear [[interpolation|Glossary#interpolation]] is done using the approximate method. The result of the interpolation is added to the corresponding date in the country data_frame.
+  > Frequency of pos_373 on 01-01-2022 = $\frac{count\space of\space mutations\space in\space pos\_373\space on\space 01-01-2022}{Number\space of\space sequences\space on\space 01-01-2022}$
+- To have the frequency data for everyday from Jan 1 2022 - Oct 31 2023, linear [[interpolation|Glossary#interpolation]] is done using the approximate method. The result of the interpolation is added to the corresponding date in the country data_frame. This step is necessary to fill in the data gaps.
   
 [[Question on interpolation|Work_documented.possible_questions#4-why-do-we-do-linear-interpolation-why-not-spline-interpolation]]
 
 ## Computing the pressure on the position
 
-With the formula (given by Prof.Max) the pressure on each position was computed
-$\\ P(pos,s)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
+With the formula (given by Prof.Max) the pressure on each position from t<sub>0</sub> to t was computed
+$\\ P(pos,t)=\sum_{s=t_0}^{t}\exp^{-k[t-s]}\times f(pos,s) \\$
 
-- Where the f(pos,s) is the frequency of the position on time s.
+- Where the f(pos,t) is the frequency of the position on time t.
 - $exp^{-k[t-s]}$ is the discount factor - mutation frequencies that occurred [t-s] days ago get discounted by the half life of neutralising antibodies.
 - $k\sim \frac{ln(2)}{45+14}$
 - By suggestion of the Prof. the vector for discount factor was first computed. For this the date range for each of the country_df was found. If the difference between the start day and the end day is 9 then [t-s] could be in the range 0-9. Hence with this as base the discount factor was computed for [t-s] ranging 0-[difference between the start day to end day in the dataframe]. All these values are stored in a vector.
-- According to the selected $t_0$, $t$ the discount factor vector was sliced and the frequency of the particular position in the time duration $t_0$ to $t$ was matrix multiplied to get the pressure on the position.
-- This was done for all the RBD positions in a country and repeated for all the 10 countries.
-- The output will have two columns - RBD posisition and the pressure on the position.
+- From the start date to the end date the pressure was calculated for everday in the following manner
+- $$$\\
+  P(pos,d1)=\exp^{-k[d1-d1]}\times f(pos,d1) \\
+  P(pos,d2)=\exp^{-k[d2-d1]}\times f(pos,d1) + \exp^{-k[d2-d2]}\times f(pos,d2)\\
+  P(pos,d3)=\exp^{-k[d3-d1]}\times f(pos,d1) + \exp^{-k[d3-d2]}\times f(pos,d2)  + \exp^{-k[d3-d3]}\times f(pos,d3)
+  $$$
+- This was done for all the RBD, NTD positions in a country and repeated for all the 10 countries.
+- The output will have one column with the RBD and NTD positions and with columns as many as the number of days with data in the country
+  ![Pressure output](assets/Pics/Pressure_computed_india.png)
 
 ## Masking
 
-- The objective of masking to find the exposed positions among the RBD spike positions.
+- The objective of masking to find the exposed positions among the RBD, NTD spike positions.
 - To know the exposed residues the solvent accessibility of each of the residues in the spike protein were found. [[Question on solvent acessibility|Work_documented.possible_questions#6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi]]
 - To find solvent accessibility of the protein various tools were utilitsed. This can be found here[[Work_documented.Finding_surface_residues]]
-- From the output of each of the tool Spike RBD surface positions were found. This process was direct in the case of the output from GetArea and Netsurf3.0 but in the case of DSSP, relative solvent accessibility was computed from the absolute solvent accessibility in the dssp output file. Using this computed relative solvent accessibility the surface residues were found.
+- From the output of each of the tool Spike RBD,NTD surface positions were found. This process was direct in the case of the output from GetArea and Netsurf3.0 but in the case of DSSP, relative solvent accessibility was computed from the absolute solvent accessibility in the dssp output file. Using this computed relative solvent accessibility the surface residues were found.
   
 > The categorising treshold is set as 25% similar to Netsurf3.0. This would need advice.
 
 - The number of surface residues flagged by the 3 tools vary.
   
-> Dssp : 170 residues, NetSur3.0 : 101 residues, GetArea : 104 residues. Though the numbers of getArea and Netsurf are matching, they only flag 28 positions commonly, others are all different. DSSP and Netsurf3.0 share 49 commonly flagged positions. GetArea and Dssp doesn't flag any position commonly.
-
+  - Dssp : 74 residues, NetSur3.0 : 123 residues, GetArea : 50 residues. All three tools flags 36 positions in common, GetArea and netsurf flags 38 common positions, dssp-getarea 48 positions in common, dssp-netsurf 54 positions in common.
+  - Dssp : 12 NTD, 62 RBD
+  - GetArea: 8 NTD, 42 RBD
+  - Netsurf: 22 NTD, 101 RBD
 - Residues flagged by each of the tools are fished from the ten country's position under pressure dataframe. The numbers are tabulated .![Methods comparison](assets/Pics/methods_comparison.png)
+
+The positions being picked by each of the tools are compared with the positions given by Prof.Max(screenshot). The tabulation is available in ```Work/Data_Analysis/Positions_being_picked.numbers```
 
 ## Visualization of the positions under pressure
 
-- To know how the positions under pressure would differ by country I thought heat map will be the good choice
-- To do this a dataframe was created with a column of all the exposed Spike RBD positions given by the tool. Other 10 columns belonging to each of the 10 countries. These columns contain the pressure on each of the positions that was computed earlier . If a position has no record of mutation in a country it is assigned to zero.
-- This dataframe is reshaped to make it usable for geom_tile.
-- The heat map is then plotted on this reshaped dataframe. ![Netsurf output heatmap](assets/plots/netsurf_based_output.png)
-- This was done for the outputs from all 3 tools and the heatmap is saved in different pdfs with ```Work/Data_Analysis/netsurf_based_output.pdf```,```Work/Data_Analysis/dssp_based_output.pdf```,```Work/Data_Analysis/getArea_based_output.pdf```.
+Like previous variant trend visualization, the pressure trend was also visualised using geom_line in two ways, positionwise and countrywise. These plots are present in ```Work/Data_Analysis/pressure_plots```. There are 6 plots - 3 countrywise, 3 positionsise. The 3 denotes the 3 masking tool outputs that were used to generate the plots.
 
-> Inference based on netsurf based output:
-> Pos_339,pos_460: Apart from Australia all other contries have high pressure on this position
-> Pos_346,pos_477,pos_478,pos_484,pos_498,Pos_501: Apart from India all other countries have high pressure.
-> pos_375,pos_376,pos_408: Apart from south korea all other countries have high pressure
+## Entropy for each positions:
 
-```Work/Data_Analysis/Big_goal.Rmd``` has all the scripts regarding the big goal.
+The amino acid substitution on a position is not constant. Example: on position 14 mutations found in india include Spike_Q14H,Spike_Q14del,Spike_Q14R. So calculating the number of such prevailing mutations on a position is the entropy. This was calculated to weigh down the pressure on a postiion .... Not processed further yet
+
+## Neutralisation probability:
+
+For knowing how impactful would a mutation on a site be, the probaility of neutralisation is being calculated. The Probability of neutralisation of a variant y by the antibodies elicited by variant x at time t.
+$$$
+\\
+P_{Neut}(t,x,y)=1-\prod_{v\in A_{x/y}}(1-b_v(t,x,y))
+$$$
+To compute this probability the binding probability $b_v(t,x,y)$ of an antibody of a particular epitope class with the variant is needed.
+$$$
+\\
+b_v(t,x,y)=\frac{exp^{-k[t-s]}}{FR_{x,y}(v).IC50_x(v)+exp^{-k[t-s]}}
+$$$
+
+- The discount factor is used here to represent the diminishing concentration of the antibodies. $FR_{x,y}(v)$ is the fold resistance of a variant y to binding of antibodies of epitope class $(v)$ elicited by variant x [All taken from the lab's paper which is currently in review].
+- The probability of binding is computed in the same manner as the pressure. For each postion that is getting mutated, for each of the antibodies the fold resistance and IC50 that was provided was used. These values were computed and used in the predecessor work by the lab. The resulting dataframe has the position, antibody, epitope class, FR, IC50, $b_v$ series(for all the days in the observation time line). Binding proability with FR=1 and FR provided in the table were used to comput two resulting dataframes.
+- With the computed two binding probability dataframes, two probability of neutralisation dataframes are computed. $P_{1_{Neut}}$ (with FR=1), $P_{2_{Neut}}$. The Probability neutralisation dataframes contains a column for the  position, and other columns dedicated for all the time steps.
+- To compute the probability of neutralisation, for each position, for each time step, the binding probability of all the antibody classes for the time step are considered.
+- To note, if a position binds to more than one antibody belonging to a single epitope class, these binding probabilities are averaged and then used to compute the proability of neutralisiation.
+- The weight is computed by $\frac{P_{1_{Neut}}\space (with FR=1)}{ P_{2_{Neut}}}$.
+- The computed weight is then multiplied with the pressure timestepwise and then the weighted pressure is plotted - Positionwise and countrywise; all the positions are considered irrespective of being exposed or burried. ```Work/Data_Analysis/pressure_plots/pos_pressure_trend_weighted_pressure.pdf```, ```Work/Data_Analysis/pressure_plots/pressure_trend_weighted_pressure.pdf```
+- ```Work/Data_Analysis/Big_goal.Rmd```, ```Work/Data_Analysis/neutralisation_probability.Rmd``` has all the scripts regarding the big goal.
 
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
