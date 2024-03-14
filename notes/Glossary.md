@@ -2,7 +2,7 @@
 id: v4t96j5kch5mq12272qsyih
 title: Glossary
 desc: 'Some terms that has been used'
-updated: 1704797024469
+updated: 1708937317211
 created: 1700240802023
 ---
 ## **Outliers**

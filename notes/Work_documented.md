@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1708935902291
+updated: 1710441917295
 created: 1700240700998
 ---
 # Objective
@@ -126,7 +126,7 @@ ten_country_mut_data/* \
 
 ## Finding positions under pressure (BIG GOAL)
 
-The big goal is to find the positions under pressure. To obtain this, firstly the frequency of of mutation on each position of Spike RBD and NTD Epitopes are calculated. (RBD spike mutations in position 330-530, NTD(14-20,140-158,245-264) mutations)([[Question on the position|Work_documented.possible_questions#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) For this the aa_substitution data obtained from GISAID was used.
+The big goal is to find the positions under pressure. To obtain this, firstly the frequency of  mutation on each position of Spike RBD and NTD Epitopes are calculated. (RBD spike mutations in position 330-530, NTD(14-20,140-158,245-264) mutations)([[Question on the position|Work_documented.possible_questions#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa]]) For this the aa_substitution data obtained from GISAID was used.
 ![frequency interpolation](assets/Pics/Frequency_interpolation.png)
 
 **STEPS:**
@@ -202,13 +202,73 @@ $$$
 b_v(t,x,y)=\frac{exp^{-k[t-s]}}{FR_{x,y}(v).IC50_x(v)+exp^{-k[t-s]}}
 $$$
 
-- The discount factor is used here to represent the diminishing concentration of the antibodies. $FR_{x,y}(v)$ is the fold resistance of a variant y to binding of antibodies of epitope class $(v)$ elicited by variant x [All taken from the lab's paper which is currently in review].
-- The probability of binding is computed in the same manner as the pressure. For each postion that is getting mutated, for each of the antibodies the fold resistance and IC50 that was provided was used. These values were computed and used in the predecessor work by the lab. The resulting dataframe has the position, antibody, epitope class, FR, IC50, $b_v$ series(for all the days in the observation time line). Binding proability with FR=1 and FR provided in the table were used to comput two resulting dataframes.
-- With the computed two binding probability dataframes, two probability of neutralisation dataframes are computed. $P_{1_{Neut}}$ (with FR=1), $P_{2_{Neut}}$. The Probability neutralisation dataframes contains a column for the  position, and other columns dedicated for all the time steps.
+- The discount factor is used here to represent the diminishing concentration of the antibodies elicited by variant x. $FR_{x,y}(v)$ is the fold resistance of a variant y to binding of antibodies of epitope class $(v)$ elicited by variant x [All taken from the lab's paper which is currently in review].
+- The probability of binding is computed in the same manner as the pressure. For each postion that is getting mutated, for each of the antibodies the fold resistance and IC50 that was provided was used. These values were obtained from DMS data and was used in the predecessor work of the lab.
+- To compute the binding probability the FR and IC50 of antibodies belonging to the same epitope class was averaged and then used to compute the binding probability for an epitope class.
+- The resulting dataframe has the position, epitope class, $b_v$ series(for all the days in the observation time line). Binding proability with FR=1 and FR provided in the table were used to comput two resulting dataframes.
+- With the computed two binding probability dataframes, two probability of neutralisation dataframes are computed. $P_{1_{Neut}}$ (with FR=1), $P_{2_{Neut}}$. The Probability neutralisation dataframes contains a column for the position, and other columns dedicated for all the time steps.
 - To compute the probability of neutralisation, for each position, for each time step, the binding probability of all the antibody classes for the time step are considered.
-- To note, if a position binds to more than one antibody belonging to a single epitope class, these binding probabilities are averaged and then used to compute the proability of neutralisiation.
 - The weight is computed by $\frac{P_{1_{Neut}}\space (with FR=1)}{ P_{2_{Neut}}}$.
-- The computed weight is then multiplied with the pressure timestepwise and then the weighted pressure is plotted - Positionwise and countrywise; all the positions are considered irrespective of being exposed or burried. ```Work/Data_Analysis/pressure_plots/pos_pressure_trend_weighted_pressure.pdf```, ```Work/Data_Analysis/pressure_plots/pressure_trend_weighted_pressure.pdf```
+- The computed weight is then multiplied with the pressure timestepwise and then the weighted pressure is plotted - Positionwise and countrywise; all the positions are considered irrespective of being exposed or burried. ```Work/Data_Analysis/pressure_plots/pos_pressure_trend_avg_wtpressure.pdf```, ```Work/Data_Analysis/pressure_plots/pressure_trend_avg_wtpressure.pdf```
 - ```Work/Data_Analysis/Big_goal.Rmd```, ```Work/Data_Analysis/neutralisation_probability.Rmd``` has all the scripts regarding the big goal.
 
+> Another method: binding probability for all the time steps for all the antibodies were computed first and then averaging these binding probability of antibodies across an antibody class was done and used to find the probability of neutralisation. The weight values did not differ drasitically to be precise there are only 116 values that differ. Just sticking to the earlier method.
 [Definition Reference](https://www.cdc.gov/coronavirus/2019-ncov/variants/variant-classifications.html)
+
+## Analysis of the weighted plot
+
+- **Overall trend across all the countries:**
+  > The plots Pictures represents the overall trend for the grouped positions
+
+  **Grouping positions by similar pressure trends**
+  
+  The similar trend positions were visualised to see if, the are very near to experience same trend of pressure.
+  
+  - 373,142,501,19,440,505,478,371,417,376,339,408,375,405,498,477, 484  ![plateau curve](assets/plots/Pressure_rep_curve_plateau.png)
+  ![first group](assets/protein_locations/first_grp.png)
+  > position 19 is missing in the structure
+
+  - 496,143,145 ![Sharp curve](assets/plots/Sharp_increase_decrease.png)
+  ![second group](assets/protein_locations/second_grp.png)
+  > position 145 is missing in the structure
+
+  - 493 the trend is like the previous but with an offset in the peak ![pos 493](assets/plots/pp_493.png)
+  ![493](assets/protein_locations/pos_493.png)
+  > This position is 8.1$\AA$ away from pos 496
+  
+  - 446,346 ![small peak and big curve](assets/plots/small_peak_big_curve.png)
+  ![446_346](assets/protein_locations/446_346.png)
+  > pos 446 is missing in the structure
+  
+  - 157,452 ![small peak and big bump with decrease](assets/plots/small_peak_big_curve_decrease.png)
+  ![157_452](assets/protein_locations/452_157.png)
+  - 158,156 ![small peak and instability end](assets/plots/small_peak_instability_end.png)
+  ![156_156](assets/protein_locations/156_158.png)
+
+  - 144 similar to the previous but many countries have trends of high pressure at the end of the observation timeline ![pos 144](assets/plots/pp_144.png)
+ > position 144 not found in the structure
+
+  - 245,153,450,18 ![sharp fluctuating peaks](assets/plots/fluctuating_peaks.png)
+  ![this one](assets/protein_locations/245_153_450_18.png)
+  > pos 18,153 are absent in the struct
+
+  - 146,445,368,252,490,460,486 ![increase only in end](assets/plots/increase_end.png)
+  ![end increase](assets/protein_locations/end_increase.png)
+  > 146, 252, 445 are absent in the structure
+  
+  - 152,147,257,356,444 ![end bump](assets/plots/bump_end.png)
+  ![end bump](assets/protein_locations/end_bump.png)
+  >152, 147, 257 are absent in the structure
+
+  - 253,521 ![end small curve](assets/plots/end_small_rise.png)
+  ![253_521](assets/protein_locations/253_521.png)
+  > pos 253 is absent in the structure
+  - 455,456 ![sharp increase](assets/plots/end_sharp_increase.png)
+  ![455_456](assets/protein_locations/455_456.png)
+
+- Visually the positions that have similar pressure trends are not always in proximity on the folded protein. Since this is a static structure, there might be dynamics which can bring these positions together but this is just an hypothesis.
+  
+- 256 high pressure is observed in only australia at the end of the observation period ![pos 256](assets/plots/pp_256.png)
+- 344,494 Germany has higher pressure than others ![pos 344](assets/plots/pp_344.png) ![pos 494](assets/plots/pp_494.png)
+- 248 India and Norway records high pressure comparing to others ![pos 248](assets/plots/pp_248.png)
+  
