@@ -2,7 +2,7 @@
 id: r423m96u71ix4pb458fk8u2
 title: Work_documented
 desc: 'This is file contains all the steps done for the master thesis'
-updated: 1710441917295
+updated: 1710924226157
 created: 1700240700998
 ---
 # Objective
@@ -271,4 +271,21 @@ $$$
 - 256 high pressure is observed in only australia at the end of the observation period ![pos 256](assets/plots/pp_256.png)
 - 344,494 Germany has higher pressure than others ![pos 344](assets/plots/pp_344.png) ![pos 494](assets/plots/pp_494.png)
 - 248 India and Norway records high pressure comparing to others ![pos 248](assets/plots/pp_248.png)
+
+## Comparison of pressure trend with the variant trend
+
+- To do this the characteristic mutations of each variants were obtained using the **getMutationsByLineage** function from outbreakinfo package. From these the positions were alone taken.
+- But set of positions are not exclusive for a variant, there is major overlap. That is positions in first group belongs to the characteristics mutation of almost all the variants. So based on the mutation position pressure trend its difficult to draw a corelation with variant trend.
+- Considering mutations would be a better way to go ahead.
+- I think considering individual mutations would give allow us to visualise occurance of mutation on a position after the pressure peaks on a position
+
+## Repeating the process with Mutations
+
+- From frequency calculation to computing the weighted pressure the process was repeated again for individual mutations.
+- The visualization is slightly different. For each country there is a separate pdf. The pressure trends of mutations on the same positions are plotted together in a graph with each line representing a mutation.
+- Few trends are promising.
+- ![India promising](assets/plots/india_promising.png) This seems like at the time when the pressure trend of spike_G339O peaks - high vulnerability to be mutated the pressure trend of spike_G339H starts picking up, this corroborates the hypothesis that when the pressure increases there are higher chances for that position to be mutated.
+- ![Australia promising](assets/plots/australia_promising.png) In this case the mutant Spike_F157del has exsisted  along side of Spike_F157L. But the pressure on the former increases only after the pressure on the later peaks. This can be interpretted as the former got more favorable conditions to spread more and hence the pressure is going higher.
+- But there are trends that needs little more effort to look into ![plot1](assets/plots/plot_doubt1.png) ![plot2](assets/plots/plot_doubt2.png) ![plot3](assets/plots/plot_doubt3.png)
+  
   
