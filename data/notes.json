@@ -1,0 +1,1497 @@
+{
+  "notes": {
+    "403": {
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "fname": "403",
+      "id": "403",
+      "title": "This page has not yet sprouted",
+      "schemaStub": false,
+      "type": "note",
+      "updated": 1710928713363,
+      "created": 1710928713363,
+      "desc": "",
+      "links": [],
+      "anchors": {},
+      "children": [],
+      "parent": null,
+      "data": {}
+    },
+    "paa0s59lp320n6q8rghycjw": {
+      "id": "paa0s59lp320n6q8rghycjw",
+      "title": "Work on SARS Cov2",
+      "desc": "",
+      "updated": 1700240746536,
+      "created": 1700233379150,
+      "custom": {
+        "nav_order": 0,
+        "permalink": "/"
+      },
+      "fname": "root",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "6124b7f80065618c049c13a49f0dbed1",
+      "links": [],
+      "anchors": {},
+      "children": [
+        "1hnn8maoednnxdw5feqd4kq",
+        "nve3ld8zkeg6b2hgygrh1rp",
+        "v4t96j5kch5mq12272qsyih",
+        "r423m96u71ix4pb458fk8u2"
+      ],
+      "parent": null,
+      "data": {}
+    },
+    "r423m96u71ix4pb458fk8u2": {
+      "id": "r423m96u71ix4pb458fk8u2",
+      "title": "Work_documented",
+      "desc": "This is file contains all the steps done for the master thesis",
+      "updated": 1710924226157,
+      "created": 1700240700998,
+      "custom": {},
+      "fname": "Work_documented",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "23d717c73a4d2f44e19241b397366581",
+      "links": [
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "Question on date",
+          "position": {
+            "start": {
+              "line": 12,
+              "column": 3,
+              "offset": 464
+            },
+            "end": {
+              "line": 12,
+              "column": 165,
+              "offset": 626
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Glossary",
+          "alias": "Hampler Filter",
+          "position": {
+            "start": {
+              "line": 23,
+              "column": 135,
+              "offset": 1908
+            },
+            "end": {
+              "line": 23,
+              "column": 177,
+              "offset": 1950
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Glossary",
+            "anchorHeader": "hampler-filter"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Glossary",
+          "alias": "Outlier Estimation and methods",
+          "position": {
+            "start": {
+              "line": 23,
+              "column": 190,
+              "offset": 1963
+            },
+            "end": {
+              "line": 23,
+              "column": 264,
+              "offset": 2037
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Glossary",
+            "anchorHeader": "outlier-estimation-and-methods"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.checking inconsistencies",
+          "position": {
+            "start": {
+              "line": 34,
+              "column": 234,
+              "offset": 4041
+            },
+            "end": {
+              "line": 34,
+              "column": 278,
+              "offset": 4085
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.checking inconsistencies"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented",
+          "alias": "Note on the unassigned",
+          "position": {
+            "start": {
+              "line": 51,
+              "column": 1,
+              "offset": 6518
+            },
+            "end": {
+              "line": 51,
+              "column": 71,
+              "offset": 6588
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented",
+            "anchorHeader": "dealing-with-the-unassigned"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "Question on the treshold",
+          "position": {
+            "start": {
+              "line": 72,
+              "column": 224,
+              "offset": 7764
+            },
+            "end": {
+              "line": 72,
+              "column": 376,
+              "offset": 7916
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Glossary",
+          "alias": "Confidence interval",
+          "position": {
+            "start": {
+              "line": 94,
+              "column": 375,
+              "offset": 10252
+            },
+            "end": {
+              "line": 94,
+              "column": 427,
+              "offset": 10304
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Glossary",
+            "anchorHeader": "confidence-interval"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Analysing_variant_trends",
+          "position": {
+            "start": {
+              "line": 96,
+              "column": 281,
+              "offset": 11286
+            },
+            "end": {
+              "line": 96,
+              "column": 309,
+              "offset": 11314
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Analysing_variant_trends"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Analysing_variant_trends",
+          "position": {
+            "start": {
+              "line": 98,
+              "column": 73,
+              "offset": 11844
+            },
+            "end": {
+              "line": 98,
+              "column": 101,
+              "offset": 11872
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Analysing_variant_trends"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "Question on the position",
+          "position": {
+            "start": {
+              "line": 122,
+              "column": 249,
+              "offset": 14231
+            },
+            "end": {
+              "line": 122,
+              "column": 374,
+              "offset": 14356
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Glossary",
+          "alias": "interpolation",
+          "position": {
+            "start": {
+              "line": 135,
+              "column": 81,
+              "offset": 15564
+            },
+            "end": {
+              "line": 135,
+              "column": 121,
+              "offset": 15604
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Glossary",
+            "anchorHeader": "interpolation"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "Question on interpolation",
+          "position": {
+            "start": {
+              "line": 137,
+              "column": 1,
+              "offset": 15789
+            },
+            "end": {
+              "line": 137,
+              "column": 130,
+              "offset": 15918
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "4-why-do-we-do-linear-interpolation-why-not-spline-interpolation"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "Question on solvent acessibility",
+          "position": {
+            "start": {
+              "line": 161,
+              "column": 115,
+              "offset": 17682
+            },
+            "end": {
+              "line": 161,
+              "column": 454,
+              "offset": 18021
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi"
+          }
+        },
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.Finding_surface_residues",
+          "position": {
+            "start": {
+              "line": 162,
+              "column": 100,
+              "offset": 18121
+            },
+            "end": {
+              "line": 162,
+              "column": 144,
+              "offset": 18165
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.Finding_surface_residues"
+          }
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 51,
+              "column": 1,
+              "offset": 6518
+            },
+            "end": {
+              "line": 51,
+              "column": 71,
+              "offset": 6588
+            },
+            "indent": []
+          },
+          "value": "Work_documented"
+        }
+      ],
+      "anchors": {
+        "objective": {
+          "type": "header",
+          "text": "Objective",
+          "value": "objective",
+          "line": 7,
+          "column": 0,
+          "depth": 1
+        },
+        "steps-in-the-workflow": {
+          "type": "header",
+          "text": "Steps in the workflow",
+          "value": "steps-in-the-workflow",
+          "line": 11,
+          "column": 0,
+          "depth": 2
+        },
+        "data-acquisition": {
+          "type": "header",
+          "text": "Data acquisition",
+          "value": "data-acquisition",
+          "line": 20,
+          "column": 0,
+          "depth": 2
+        },
+        "summary": {
+          "type": "header",
+          "text": "Summary",
+          "value": "summary",
+          "line": 41,
+          "column": 0,
+          "depth": 2
+        },
+        "mapping-lineages": {
+          "type": "header",
+          "text": "Mapping lineages",
+          "value": "mapping-lineages",
+          "line": 59,
+          "column": 0,
+          "depth": 2
+        },
+        "frequency-computation": {
+          "type": "header",
+          "text": "Frequency computation",
+          "value": "frequency-computation",
+          "line": 98,
+          "column": 0,
+          "depth": 2
+        },
+        "dealing-with-the-unassigned": {
+          "type": "header",
+          "text": "Dealing with the unassigned",
+          "value": "dealing-with-the-unassigned",
+          "line": 106,
+          "column": 0,
+          "depth": 2
+        },
+        "finding-positions-under-pressure-big-goal": {
+          "type": "header",
+          "text": "Finding positions under pressure (BIG GOAL)",
+          "value": "finding-positions-under-pressure-big-goal",
+          "line": 126,
+          "column": 0,
+          "depth": 2
+        },
+        "computing-the-pressure-on-the-position": {
+          "type": "header",
+          "text": "Computing the pressure on the position",
+          "value": "computing-the-pressure-on-the-position",
+          "line": 145,
+          "column": 0,
+          "depth": 2
+        },
+        "masking": {
+          "type": "header",
+          "text": "Masking",
+          "value": "masking",
+          "line": 164,
+          "column": 0,
+          "depth": 2
+        },
+        "visualization-of-the-positions-under-pressure": {
+          "type": "header",
+          "text": "Visualization of the positions under pressure",
+          "value": "visualization-of-the-positions-under-pressure",
+          "line": 183,
+          "column": 0,
+          "depth": 2
+        },
+        "entropy-for-each-positions": {
+          "type": "header",
+          "text": "Entropy for each positions:",
+          "value": "entropy-for-each-positions",
+          "line": 187,
+          "column": 0,
+          "depth": 2
+        },
+        "neutralisation-probability": {
+          "type": "header",
+          "text": "Neutralisation probability:",
+          "value": "neutralisation-probability",
+          "line": 191,
+          "column": 0,
+          "depth": 2
+        },
+        "analysis-of-the-weighted-plot": {
+          "type": "header",
+          "text": "Analysis of the weighted plot",
+          "value": "analysis-of-the-weighted-plot",
+          "line": 217,
+          "column": 0,
+          "depth": 2
+        },
+        "comparison-of-pressure-trend-with-the-variant-trend": {
+          "type": "header",
+          "text": "Comparison of pressure trend with the variant trend",
+          "value": "comparison-of-pressure-trend-with-the-variant-trend",
+          "line": 274,
+          "column": 0,
+          "depth": 2
+        },
+        "repeating-the-process-with-mutations": {
+          "type": "header",
+          "text": "Repeating the process with Mutations",
+          "value": "repeating-the-process-with-mutations",
+          "line": 281,
+          "column": 0,
+          "depth": 2
+        }
+      },
+      "children": [
+        "g9181ia6dhnmpqfklf2mwit",
+        "vhn93xdheb909udqychwrcl",
+        "o7n9flqgbqf3xbm437bc0ih",
+        "xhw6w5ghbjhkzbo7huxzhwg"
+      ],
+      "parent": "paa0s59lp320n6q8rghycjw",
+      "data": {}
+    },
+    "xhw6w5ghbjhkzbo7huxzhwg": {
+      "id": "xhw6w5ghbjhkzbo7huxzhwg",
+      "title": "Possible_questions",
+      "desc": "This note is regarding all the question that are to be rised to understand the work",
+      "updated": 1706780755936,
+      "created": 1701937898390,
+      "custom": {},
+      "fname": "Work_documented.possible_questions",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "899a417cbfd1e36499e6f811d5dcc5be",
+      "links": [
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 12,
+              "column": 3,
+              "offset": 464
+            },
+            "end": {
+              "line": 12,
+              "column": 165,
+              "offset": 626
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 72,
+              "column": 224,
+              "offset": 7764
+            },
+            "end": {
+              "line": 72,
+              "column": 376,
+              "offset": 7916
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 122,
+              "column": 249,
+              "offset": 14231
+            },
+            "end": {
+              "line": 122,
+              "column": 374,
+              "offset": 14356
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 137,
+              "column": 1,
+              "offset": 15789
+            },
+            "end": {
+              "line": 137,
+              "column": 130,
+              "offset": 15918
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 161,
+              "column": 115,
+              "offset": 17682
+            },
+            "end": {
+              "line": 161,
+              "column": 454,
+              "offset": 18021
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        },
+        {
+          "from": {
+            "fname": "Work_documented.Mapping_lineages",
+            "id": "vhn93xdheb909udqychwrcl",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 154,
+              "column": 1,
+              "offset": 5694
+            },
+            "end": {
+              "line": 154,
+              "column": 153,
+              "offset": 5846
+            },
+            "indent": []
+          },
+          "value": "Work_documented.possible_questions"
+        }
+      ],
+      "anchors": {
+        "1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards": {
+          "type": "header",
+          "text": "1. Why/How was this particular time period (Jan22-Oct23) chosen, while pandemic has been prevelant 2020 onwards?",
+          "value": "1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards",
+          "line": 10,
+          "column": 0,
+          "depth": 3
+        },
+        "2-there-are-continuous-deposition-of-sequences-to-gisaid-even-for-the-earlier-dates-the-following-tables-shows-the-difference-in-numbers-will-calculating-ci-account-these-changes-": {
+          "type": "header",
+          "text": "2. There are continuous deposition of sequences to GISAID even for the earlier dates, the following tables shows the difference in numbers. Will calculating CI account these changes ?",
+          "value": "2-there-are-continuous-deposition-of-sequences-to-gisaid-even-for-the-earlier-dates-the-following-tables-shows-the-difference-in-numbers-will-calculating-ci-account-these-changes-",
+          "line": 14,
+          "column": 0,
+          "depth": 3
+        },
+        "3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay": {
+          "type": "header",
+          "text": "3. The jaccard index treshold chosen to decide a parent or a neighbour is 50%. Is this okay?",
+          "value": "3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay",
+          "line": 31,
+          "column": 0,
+          "depth": 3
+        },
+        "4-why-do-we-do-linear-interpolation-why-not-spline-interpolation": {
+          "type": "header",
+          "text": "4. Why do we do linear interpolation, why not spline interpolation?",
+          "value": "4-why-do-we-do-linear-interpolation-why-not-spline-interpolation",
+          "line": 35,
+          "column": 0,
+          "depth": 3
+        },
+        "5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa": {
+          "type": "header",
+          "text": "5. Aaccording to Uniprot the RBD region in spike  is 319-541aa",
+          "value": "5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa",
+          "line": 39,
+          "column": 0,
+          "depth": 3
+        },
+        "6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi": {
+          "type": "header",
+          "text": "6. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might change probably due to the difference in the fold.  In that case should we study these positions in each of the VOI?",
+          "value": "6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi",
+          "line": 43,
+          "column": 0,
+          "depth": 3
+        },
+        "7--the-computed-pressure-trend-for-a-position-is-obtained-by-calculating-pressure-at-multiple-time-points-for-now-pressure-is-computed-every-180-days-the-time-horizon-is-not-exactly-divisible-into-bins-of-180-days-there-will-be-difference-in-the-final-bin-will-this-be-a-problem": {
+          "type": "header",
+          "text": "7.  The computed pressure trend for a position is obtained by calculating pressure at multiple time points. For now pressure is computed every 180 days. The time horizon is not exactly divisible into bins of 180 days. There will be difference in the final bin. Will this be a problem?",
+          "value": "7--the-computed-pressure-trend-for-a-position-is-obtained-by-calculating-pressure-at-multiple-time-points-for-now-pressure-is-computed-every-180-days-the-time-horizon-is-not-exactly-divisible-into-bins-of-180-days-there-will-be-difference-in-the-final-bin-will-this-be-a-problem",
+          "line": 47,
+          "column": 0,
+          "depth": 3
+        }
+      },
+      "children": [],
+      "parent": "r423m96u71ix4pb458fk8u2",
+      "data": {}
+    },
+    "o7n9flqgbqf3xbm437bc0ih": {
+      "id": "o7n9flqgbqf3xbm437bc0ih",
+      "title": "checking inconsistencies",
+      "desc": "What was done to know about the inconsistencies",
+      "updated": 1702286538708,
+      "created": 1702040914123,
+      "custom": {},
+      "fname": "Work_documented.checking inconsistencies",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "7ab6b0d347ab602c58e9323908caa9fa",
+      "links": [
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 34,
+              "column": 234,
+              "offset": 4041
+            },
+            "end": {
+              "line": 34,
+              "column": 278,
+              "offset": 4085
+            },
+            "indent": []
+          },
+          "value": "Work_documented.checking inconsistencies"
+        }
+      ],
+      "anchors": {},
+      "children": [],
+      "parent": "r423m96u71ix4pb458fk8u2",
+      "data": {}
+    },
+    "vhn93xdheb909udqychwrcl": {
+      "id": "vhn93xdheb909udqychwrcl",
+      "title": "Mapping_lineages",
+      "desc": "This note describes the algorithm of mapping lineage",
+      "updated": 1703594678282,
+      "created": 1702286483115,
+      "custom": {},
+      "fname": "Work_documented.Mapping_lineages",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "1271044163cccb97864a5b694781c570",
+      "links": [
+        {
+          "type": "wiki",
+          "from": {
+            "fname": "Work_documented.Mapping_lineages",
+            "id": "vhn93xdheb909udqychwrcl",
+            "vaultName": "Literature"
+          },
+          "value": "Work_documented.possible_questions",
+          "alias": "question on the treshold",
+          "position": {
+            "start": {
+              "line": 154,
+              "column": 1,
+              "offset": 5694
+            },
+            "end": {
+              "line": 154,
+              "column": 153,
+              "offset": 5846
+            },
+            "indent": []
+          },
+          "xvault": false,
+          "sameFile": false,
+          "to": {
+            "fname": "Work_documented.possible_questions",
+            "anchorHeader": "3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay"
+          }
+        }
+      ],
+      "anchors": {},
+      "children": [],
+      "parent": "r423m96u71ix4pb458fk8u2",
+      "data": {}
+    },
+    "g9181ia6dhnmpqfklf2mwit": {
+      "id": "g9181ia6dhnmpqfklf2mwit",
+      "title": "Finding_surface_residues",
+      "desc": "Tools that were used and their ip/op",
+      "updated": 1705486031159,
+      "created": 1705316171645,
+      "custom": {},
+      "fname": "Work_documented.Finding_surface_residues",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "a780a4b4ed728430b3dbea899704ed20",
+      "links": [
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 162,
+              "column": 100,
+              "offset": 18121
+            },
+            "end": {
+              "line": 162,
+              "column": 144,
+              "offset": 18165
+            },
+            "indent": []
+          },
+          "value": "Work_documented.Finding_surface_residues"
+        }
+      ],
+      "anchors": {
+        "dssp-server": {
+          "type": "header",
+          "text": "DSSP server",
+          "value": "dssp-server",
+          "line": 8,
+          "column": 0,
+          "depth": 2
+        },
+        "get-area-server": {
+          "type": "header",
+          "text": "Get Area server",
+          "value": "get-area-server",
+          "line": 24,
+          "column": 0,
+          "depth": 2
+        },
+        "netsurfp-30": {
+          "type": "header",
+          "text": "NetSurfP 3.0",
+          "value": "netsurfp-30",
+          "line": 34,
+          "column": 0,
+          "depth": 2
+        }
+      },
+      "children": [],
+      "parent": "r423m96u71ix4pb458fk8u2",
+      "data": {}
+    },
+    "v4t96j5kch5mq12272qsyih": {
+      "id": "v4t96j5kch5mq12272qsyih",
+      "title": "Glossary",
+      "desc": "Some terms that has been used",
+      "updated": 1708937317211,
+      "created": 1700240802023,
+      "custom": {},
+      "fname": "Glossary",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "dcf3970a38bb355f7f76468c17bad4eb",
+      "links": [
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 23,
+              "column": 135,
+              "offset": 1908
+            },
+            "end": {
+              "line": 23,
+              "column": 177,
+              "offset": 1950
+            },
+            "indent": []
+          },
+          "value": "Glossary"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 23,
+              "column": 190,
+              "offset": 1963
+            },
+            "end": {
+              "line": 23,
+              "column": 264,
+              "offset": 2037
+            },
+            "indent": []
+          },
+          "value": "Glossary"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 94,
+              "column": 375,
+              "offset": 10252
+            },
+            "end": {
+              "line": 94,
+              "column": 427,
+              "offset": 10304
+            },
+            "indent": []
+          },
+          "value": "Glossary"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 135,
+              "column": 81,
+              "offset": 15564
+            },
+            "end": {
+              "line": 135,
+              "column": 121,
+              "offset": 15604
+            },
+            "indent": []
+          },
+          "value": "Glossary"
+        }
+      ],
+      "anchors": {
+        "outliers": {
+          "type": "header",
+          "text": "Outliers",
+          "value": "outliers",
+          "line": 7,
+          "column": 0,
+          "depth": 2
+        },
+        "point-outlier": {
+          "type": "header",
+          "text": "Point outlier:",
+          "value": "point-outlier",
+          "line": 9,
+          "column": 0,
+          "depth": 3
+        },
+        "subsequences": {
+          "type": "header",
+          "text": "Subsequences:",
+          "value": "subsequences",
+          "line": 13,
+          "column": 0,
+          "depth": 3
+        },
+        "outlier-estimation-and-methods": {
+          "type": "header",
+          "text": "Outlier Estimation and methods:",
+          "value": "outlier-estimation-and-methods",
+          "line": 17,
+          "column": 0,
+          "depth": 3
+        },
+        "hampler-filter": {
+          "type": "header",
+          "text": "Hampler Filter",
+          "value": "hampler-filter",
+          "line": 33,
+          "column": 0,
+          "depth": 4
+        },
+        "confidence-interval": {
+          "type": "header",
+          "text": "Confidence interval",
+          "value": "confidence-interval",
+          "line": 37,
+          "column": 0,
+          "depth": 2
+        },
+        "interpolation": {
+          "type": "header",
+          "text": "Interpolation",
+          "value": "interpolation",
+          "line": 50,
+          "column": 0,
+          "depth": 2
+        }
+      },
+      "children": [],
+      "parent": "paa0s59lp320n6q8rghycjw",
+      "data": {}
+    },
+    "nve3ld8zkeg6b2hgygrh1rp": {
+      "id": "nve3ld8zkeg6b2hgygrh1rp",
+      "title": "Appendix",
+      "desc": "Contains information related to the data",
+      "updated": 1708937754709,
+      "created": 1708937356984,
+      "custom": {},
+      "fname": "Appendix",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "ab96157bfea5e0b39a016ad136c9922d",
+      "links": [],
+      "anchors": {
+        "deep-mutational-scanning-data": {
+          "type": "header",
+          "text": "Deep Mutational scanning data:",
+          "value": "deep-mutational-scanning-data",
+          "line": 8,
+          "column": 0,
+          "depth": 2
+        }
+      },
+      "children": [],
+      "parent": "paa0s59lp320n6q8rghycjw",
+      "data": {}
+    },
+    "1hnn8maoednnxdw5feqd4kq": {
+      "id": "1hnn8maoednnxdw5feqd4kq",
+      "title": "Analysis of the varient trend plots",
+      "desc": "This note contains all summary of variant trend analysis",
+      "updated": 1704791130684,
+      "created": 1701882355956,
+      "custom": {},
+      "fname": "Analysing_variant_trends",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "f8d403c4b751cd3a6c6e82fe76ab2f46",
+      "links": [
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 96,
+              "column": 281,
+              "offset": 11286
+            },
+            "end": {
+              "line": 96,
+              "column": 309,
+              "offset": 11314
+            },
+            "indent": []
+          },
+          "value": "Analysing_variant_trends"
+        },
+        {
+          "from": {
+            "fname": "Work_documented",
+            "id": "r423m96u71ix4pb458fk8u2",
+            "vaultName": "Literature"
+          },
+          "type": "backlink",
+          "position": {
+            "start": {
+              "line": 98,
+              "column": 73,
+              "offset": 11844
+            },
+            "end": {
+              "line": 98,
+              "column": 101,
+              "offset": 11872
+            },
+            "indent": []
+          },
+          "value": "Analysing_variant_trends"
+        }
+      ],
+      "anchors": {
+        "inference-that-are-interesting": {
+          "type": "header",
+          "text": "Inference that are interesting",
+          "value": "inference-that-are-interesting",
+          "line": 10,
+          "column": 0,
+          "depth": 2
+        },
+        "10-ba286": {
+          "type": "header",
+          "text": "10. BA.2.86",
+          "value": "10-ba286",
+          "line": 34,
+          "column": 2,
+          "depth": 2
+        },
+        "interesting-plots-of-lineages-not-variant": {
+          "type": "header",
+          "text": "Interesting plots of lineages not variant",
+          "value": "interesting-plots-of-lineages-not-variant",
+          "line": 44,
+          "column": 0,
+          "depth": 2
+        },
+        "summary-for-variants": {
+          "type": "header",
+          "text": "Summary for Variants",
+          "value": "summary-for-variants",
+          "line": 67,
+          "column": 0,
+          "depth": 2
+        },
+        "b117alpha": {
+          "type": "header",
+          "text": "B.1.1.7(alpha)",
+          "value": "b117alpha",
+          "line": 69,
+          "column": 0,
+          "depth": 3
+        },
+        "ba275": {
+          "type": "header",
+          "text": "BA.2.75",
+          "value": "ba275",
+          "line": 74,
+          "column": 0,
+          "depth": 3
+        },
+        "ba286": {
+          "type": "header",
+          "text": "BA.2.86",
+          "value": "ba286",
+          "line": 83,
+          "column": 0,
+          "depth": 2
+        },
+        "b1351beta": {
+          "type": "header",
+          "text": "B.1.351(Beta)",
+          "value": "b1351beta",
+          "line": 89,
+          "column": 0,
+          "depth": 2
+        },
+        "b16172delta": {
+          "type": "header",
+          "text": "B.1.617.2(Delta)",
+          "value": "b16172delta",
+          "line": 95,
+          "column": 0,
+          "depth": 2
+        },
+        "p1gamma": {
+          "type": "header",
+          "text": "P.1(Gamma)",
+          "value": "p1gamma",
+          "line": 106,
+          "column": 0,
+          "depth": 2
+        },
+        "b11529omicron": {
+          "type": "header",
+          "text": "B.1.1.529(Omicron)",
+          "value": "b11529omicron",
+          "line": 110,
+          "column": 0,
+          "depth": 2
+        },
+        "b16171kappa": {
+          "type": "header",
+          "text": "B.1.617.1(Kappa)",
+          "value": "b16171kappa",
+          "line": 116,
+          "column": 0,
+          "depth": 2
+        },
+        "eg5": {
+          "type": "header",
+          "text": "EG.5",
+          "value": "eg5",
+          "line": 121,
+          "column": 0,
+          "depth": 2
+        },
+        "xbb116omicron": {
+          "type": "header",
+          "text": "XBB.1.16(omicron)",
+          "value": "xbb116omicron",
+          "line": 128,
+          "column": 0,
+          "depth": 2
+        },
+        "xbb15omicron": {
+          "type": "header",
+          "text": "XBB.1.5(omicron)",
+          "value": "xbb15omicron",
+          "line": 133,
+          "column": 0,
+          "depth": 2
+        },
+        "xbb-191": {
+          "type": "header",
+          "text": "XBB 1.9.1",
+          "value": "xbb-191",
+          "line": 140,
+          "column": 0,
+          "depth": 2
+        },
+        "xbb192": {
+          "type": "header",
+          "text": "XBB.1.9.2",
+          "value": "xbb192",
+          "line": 147,
+          "column": 0,
+          "depth": 2
+        },
+        "xbb23": {
+          "type": "header",
+          "text": "XBB.2.3",
+          "value": "xbb23",
+          "line": 153,
+          "column": 0,
+          "depth": 2
+        },
+        "ch11": {
+          "type": "header",
+          "text": "CH.1.1",
+          "value": "ch11",
+          "line": 158,
+          "column": 0,
+          "depth": 2
+        },
+        "xbbomicron": {
+          "type": "header",
+          "text": "XBB(omicron)",
+          "value": "xbbomicron",
+          "line": 163,
+          "column": 0,
+          "depth": 2
+        }
+      },
+      "children": [],
+      "parent": "paa0s59lp320n6q8rghycjw",
+      "data": {}
+    }
+  },
+  "domains": [
+    {
+      "id": "paa0s59lp320n6q8rghycjw",
+      "title": "Work on SARS Cov2",
+      "desc": "",
+      "updated": 1700240746536,
+      "created": 1700233379150,
+      "custom": {
+        "nav_order": 0,
+        "permalink": "/"
+      },
+      "fname": "root",
+      "type": "note",
+      "vault": {
+        "fsPath": ".",
+        "selfContained": true,
+        "name": "Literature"
+      },
+      "contentHash": "6124b7f80065618c049c13a49f0dbed1",
+      "links": [],
+      "anchors": {},
+      "children": [
+        "1hnn8maoednnxdw5feqd4kq",
+        "nve3ld8zkeg6b2hgygrh1rp",
+        "v4t96j5kch5mq12272qsyih",
+        "r423m96u71ix4pb458fk8u2"
+      ],
+      "parent": null,
+      "data": {},
+      "body": "\n"
+    }
+  ],
+  "noteIndex": {
+    "id": "paa0s59lp320n6q8rghycjw",
+    "title": "Work on SARS Cov2",
+    "desc": "",
+    "updated": 1700240746536,
+    "created": 1700233379150,
+    "custom": {
+      "nav_order": 0,
+      "permalink": "/"
+    },
+    "fname": "root",
+    "type": "note",
+    "vault": {
+      "fsPath": ".",
+      "selfContained": true,
+      "name": "Literature"
+    },
+    "contentHash": "6124b7f80065618c049c13a49f0dbed1",
+    "links": [],
+    "anchors": {},
+    "children": [
+      "1hnn8maoednnxdw5feqd4kq",
+      "nve3ld8zkeg6b2hgygrh1rp",
+      "v4t96j5kch5mq12272qsyih",
+      "r423m96u71ix4pb458fk8u2"
+    ],
+    "parent": null,
+    "data": {},
+    "body": "\n"
+  },
+  "vaults": [
+    {
+      "fsPath": ".",
+      "selfContained": true,
+      "name": "Literature"
+    }
+  ]
+}

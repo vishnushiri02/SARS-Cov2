@@ -1,0 +1,150 @@
+<!DOCTYPE html><html><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width"/><link rel="icon" href="/SARS-Cov2/favicon.ico"/><title>Mapping_lineages</title><meta name="robots" content="index,follow"/><meta name="googlebot" content="index,follow"/><meta name="description" content="This note describes the algorithm of mapping lineage"/><meta property="og:title" content="Mapping_lineages"/><meta property="og:description" content="This note describes the algorithm of mapping lineage"/><meta property="og:url" content="https://vishnushiri02.github.io/SARS-Cov2/notes/vhn93xdheb909udqychwrcl/"/><meta property="og:type" content="article"/><meta property="article:published_time" content="12/11/2023"/><meta property="article:modified_time" content="12/26/2023"/><link rel="canonical" href="https://vishnushiri02.github.io/SARS-Cov2/notes/vhn93xdheb909udqychwrcl/"/><meta name="next-head-count" content="14"/><link rel="preload" href="/SARS-Cov2/_next/static/css/b185cac82247bc6c.css" as="style"/><link rel="stylesheet" href="/SARS-Cov2/_next/static/css/b185cac82247bc6c.css" data-n-g=""/><noscript data-n-css=""></noscript><script defer="" nomodule="" src="/SARS-Cov2/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/SARS-Cov2/_next/static/chunks/webpack-1cb654aa556e0993.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/framework-28c999baf2863c3d.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/main-fa154d5c5ddc4bf7.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/pages/_app-0218995cbb01ab10.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/935-4dee79e80b8641c6.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/6-50972def09142ee2.js" defer=""></script><script src="/SARS-Cov2/_next/static/chunks/pages/notes/%5Bid%5D-78d472fa3b924116.js" defer=""></script><script src="/SARS-Cov2/_next/static/npK0PGR6Fa7mwLej5tvS3/_buildManifest.js" defer=""></script><script src="/SARS-Cov2/_next/static/npK0PGR6Fa7mwLej5tvS3/_ssgManifest.js" defer=""></script></head><body><div id="__next" data-reactroot=""><section class="ant-layout" style="width:100%;min-height:100%"><header class="ant-layout-header" style="position:fixed;isolation:isolate;z-index:1;width:100%;border-bottom:1px solid #d4dadf;height:64px;padding:0 24px 0 2px"><div class="ant-row ant-row-center" style="max-width:992px;justify-content:space-between;margin:0 auto"><div style="display:flex" class="ant-col ant-col-xs-20 ant-col-sm-4"></div><div class="ant-col gutter-row ant-col-xs-0 ant-col-sm-20 ant-col-md-20 ant-col-lg-19"><div class="ant-select ant-select-lg ant-select-auto-complete ant-select-single ant-select-allow-clear ant-select-show-search" style="width:100%"><div class="ant-select-selector"><span class="ant-select-selection-search"><input type="search" autoComplete="off" class="ant-select-selection-search-input" role="combobox" aria-haspopup="listbox" aria-owns="undefined_list" aria-autocomplete="list" aria-controls="undefined_list" aria-activedescendant="undefined_list_0" value=""/></span><span class="ant-select-selection-placeholder">For full text search please use the &#x27;?&#x27; prefix. e.g. ? Onboarding</span></div></div></div><div style="display:none;align-items:center;justify-content:center" class="ant-col ant-col-xs-4 ant-col-sm-4 ant-col-md-0 ant-col-lg-0"><span role="img" aria-label="menu" style="font-size:24px" tabindex="-1" class="anticon anticon-menu"><svg viewBox="64 64 896 896" focusable="false" data-icon="menu" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M904 160H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0 624H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8zm0-312H120c-4.4 0-8 3.6-8 8v64c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-64c0-4.4-3.6-8-8-8z"></path></svg></span></div></div></header><section class="ant-layout" style="margin-top:64px;display:flex;flex-direction:row"><div class="site-layout-sidebar" style="flex:0 0 auto;width:calc(max((100% - 992px) / 2, 0px) + 200px);min-width:200px;padding-left:calc((100% - 992px) / 2)"><aside class="ant-layout-sider ant-layout-sider-dark" style="position:fixed;overflow:auto;height:calc(100vh - 64px);background-color:transparent;flex:0 0 200px;max-width:200px;min-width:200px;width:200px"><div class="ant-layout-sider-children"></div></aside></div><main class="ant-layout-content side-layout-main" style="max-width:1200px;min-width:0;display:block"><div style="padding:0 24px"><div class="main-content" role="main"><div class="ant-row"><div class="ant-col ant-col-24"><div class="ant-row" style="margin-left:-10px;margin-right:-10px"><div style="padding-left:10px;padding-right:10px" class="ant-col ant-col-xs-24 ant-col-md-18"><div><h1 id="mapping_lineages">Mapping_lineages<a aria-hidden="true" class="anchor-heading icon-link" href="#mapping_lineages"></a></h1>
+<pre class="language-{algorithm}"><code class="language-{Algorithm}">Function mapping_lineages (lineage_cmut,alias_df)
+
+    Function chunk_lineage(lineage_cmut,alias_df)
+        
+        1.Chunks lineages and sublineages by the first character of Pangolin string. 
+        One element of the input data frame is considered at an instance and all the 
+        members of the clade to which it belongs are chunked and passed to the downstream 
+        processing.
+
+        2. If there are no lineages having the same first 
+        character but there are entries in the input df, the lineage is 
+        mapped to it's own and is stored in alias_df.
+
+        3. else If the there are no more entries in the 
+        lineage_cmut then the lineage is mapped to itself and  return is called.
+
+        4. else the chunk stored in temp_df is passed to
+        long_sublineage
+
+    End
+
+    Function long_sublineage(temp_df,lineage_cmut,
+    alias_df,alias_df_temp)
+
+        1. Finds the sublineage with longest character string
+        and stores it in longlineage_df
+
+        2. If multiple lineages have long character string
+        both the lineages are stored in longlineage_df
+
+        3. If linegaes length is just one then it is the
+        parental lineage and it is mapped to it's own and is
+        removed from temp_df amd is stored in alias_df
+
+    END
+
+    Function match_merge(longlineage_df,temp_df
+    lineage_cmut,alias_df,alias_df_temp)
+
+    1. Iterates through the longlineage_df, forms pattern
+    from the first element taken and tries to find
+    neighbours in longlineage_df based on jaccard value
+    using function find_jaccard
+
+        1. If neighbours are found their mutations are
+        combined (union).
+
+        2. Checks if these neighbors are paretnal lineage to
+        some other lineage in the alias_temp_df
+
+        3. Checking if there is a parental lineage to the
+        neighbours in the temp_df
+
+        4. If parental lineage is found and if the length of the parental 
+        lineage string is more than one, the mutations of the
+        neighbours and the parernal lineages are again
+        combined (union) and stored in the place of 
+        mutations of the parental lineage in temp_df. Neighbours are 
+        mapped to their found parent and are stored in alias_df_temp, 
+        since there is potential for surther mapping. This parental 
+        lineage also becomes the parental lineage for the 
+        sublineages that had these neighbours as parental 
+        lineage in alias_df_temp.These neighbors are removed from 
+        longlineage_df and the loop is iterated for the next round.
+        
+        5. Else if the length of the parental lineage is 
+        equal to 1 then everything in the previous point 
+        that was written in the alias_df_temp is written to
+        alias_df. Mutations are not meddled with, since it is 
+        the ultimate paretnal lineage and there is no go further.
+
+        6. If no parental lineage was found then the the
+        Neighbours are mapped to the pattern which is the
+        name of the neigbors without the last character. This
+        pattern concatinated with x becomes the parental 
+        lineage of the neighbors. This also becomes the 
+        parental lineage for those sublineages for which the 
+        nighbors were parental lineage.
+
+    2. If there are no neighbors found
+
+        1. Code directly starts finding the parental 
+        lineage for the element being considered.
+
+        2. If paretnal lineage is found and the length of 
+        the lineage is more than 1, the element in hand 
+        is mapped to the found paretnal lineage and jaccard 
+        value is stored in the alias_df_temp.  Mutations of 
+        the element and the found parental lineage is combined and 
+        stored in the place of the parental mutations in temp_df
+
+        3. Sublineages for which the lineage in hand is the parental
+        lineage in alias_df_temp gets mapped to the newly found parental lineage.
+
+        4. If the length of the parental lineage being 
+        found is equal to one then point 2,3 is repeated 
+        but difference would be that instaed of 
+        alias_temp_df, alias_df is used and mutations are not meddeled with.
+
+    3. If no parerntal and neighbors were found
+
+        1. The lineage being considered is mapped to 
+        itself.
+
+        2. For sublineages in the alias_df_temp that has 
+        the lineage being considered as parental lineage is 
+        remains the same. It is just transfered to 
+        alias_df with no changes.
+
+    
+    Once the longlineage_df has been fully processed if 
+    there are entries in temp_df long_sublineage is called else chunk lineage is called.
+    
+
+
+
+    END
+
+End
+</code></pre>
+<pre class="language-{algorithm}"><code class="language-{Algorithm}">Function find_jaccard(pat,search_df,pat_mutations=0)
+
+    search_lineage_loc&#x3C;-grep(pat,search_df$lineage)
+
+    1. If pat_mutations==0 means the function is finding the
+    neighbours. Else the function is overloaded
+    to find the parental lineage.
+
+    2. If pat_mutations==0 the length(search_lineage_loc) should be
+    more than 1 - neighbours other than the lineage in hand.
+
+    3. If no neighbours were found then function returns 
+    neighbours="0", jaccard_value=-1,neighbour_loc=0
+
+    4. Other than point 2 the overloaded function does the
+    same functionality for both the overloaded purposes
+    and returns jaccard value, neighbours, neighbour_loc 
+End
+</code></pre>
+<pre class="language-{find"><code class="language-{Find">Function Find_parental(pat,parental_df)
+
+    1. Recursively searches with the pattern 
+    until it finds the parental lineage satisfying 
+    the conditions 
+    2. The pattern is shortened every iteration.
+End
+</code></pre>
+<p><img src="/SARS-Cov2/assets/Pics/mapping_lineages.png" alt="Flowchart to explain">
+<a href="/SARS-Cov2/notes/xhw6w5ghbjhkzbo7huxzhwg#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay">question on the treshold</a></p></div></div><div style="padding-left:10px;padding-right:10px" class="ant-col ant-col-xs-0 ant-col-md-6"><div><div class=""><div class="ant-anchor-wrapper dendron-toc" style="max-height:calc(100vh - 64px);z-index:1"><div class="ant-anchor"><div class="ant-anchor-ink"><span class="ant-anchor-ink-ball"></span></div></div></div></div></div></div></div></div></div></div></div><div class="ant-divider ant-divider-horizontal" role="separator"></div><footer class="ant-layout-footer" style="padding:0 24px 24px"></footer></main></section></section></div><script id="__NEXT_DATA__" type="application/json">{"props":{"pageProps":{"note":{"id":"vhn93xdheb909udqychwrcl","title":"Mapping_lineages","desc":"This note describes the algorithm of mapping lineage","updated":1703594678282,"created":1702286483115,"custom":{},"fname":"Work_documented.Mapping_lineages","type":"note","vault":{"fsPath":".","selfContained":true,"name":"Literature"},"contentHash":"1271044163cccb97864a5b694781c570","links":[{"type":"wiki","from":{"fname":"Work_documented.Mapping_lineages","id":"vhn93xdheb909udqychwrcl","vaultName":"Literature"},"value":"Work_documented.possible_questions","alias":"question on the treshold","position":{"start":{"line":154,"column":1,"offset":5694},"end":{"line":154,"column":153,"offset":5846},"indent":[]},"xvault":false,"sameFile":false,"to":{"fname":"Work_documented.possible_questions","anchorHeader":"3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay"}}],"anchors":{},"children":[],"parent":"r423m96u71ix4pb458fk8u2","data":{}},"body":"\u003ch1 id=\"mapping_lineages\"\u003eMapping_lineages\u003ca aria-hidden=\"true\" class=\"anchor-heading icon-link\" href=\"#mapping_lineages\"\u003e\u003c/a\u003e\u003c/h1\u003e\n\u003cpre class=\"language-{algorithm}\"\u003e\u003ccode class=\"language-{Algorithm}\"\u003eFunction mapping_lineages (lineage_cmut,alias_df)\n\n    Function chunk_lineage(lineage_cmut,alias_df)\n        \n        1.Chunks lineages and sublineages by the first character of Pangolin string. \n        One element of the input data frame is considered at an instance and all the \n        members of the clade to which it belongs are chunked and passed to the downstream \n        processing.\n\n        2. If there are no lineages having the same first \n        character but there are entries in the input df, the lineage is \n        mapped to it's own and is stored in alias_df.\n\n        3. else If the there are no more entries in the \n        lineage_cmut then the lineage is mapped to itself and  return is called.\n\n        4. else the chunk stored in temp_df is passed to\n        long_sublineage\n\n    End\n\n    Function long_sublineage(temp_df,lineage_cmut,\n    alias_df,alias_df_temp)\n\n        1. Finds the sublineage with longest character string\n        and stores it in longlineage_df\n\n        2. If multiple lineages have long character string\n        both the lineages are stored in longlineage_df\n\n        3. If linegaes length is just one then it is the\n        parental lineage and it is mapped to it's own and is\n        removed from temp_df amd is stored in alias_df\n\n    END\n\n    Function match_merge(longlineage_df,temp_df\n    lineage_cmut,alias_df,alias_df_temp)\n\n    1. Iterates through the longlineage_df, forms pattern\n    from the first element taken and tries to find\n    neighbours in longlineage_df based on jaccard value\n    using function find_jaccard\n\n        1. If neighbours are found their mutations are\n        combined (union).\n\n        2. Checks if these neighbors are paretnal lineage to\n        some other lineage in the alias_temp_df\n\n        3. Checking if there is a parental lineage to the\n        neighbours in the temp_df\n\n        4. If parental lineage is found and if the length of the parental \n        lineage string is more than one, the mutations of the\n        neighbours and the parernal lineages are again\n        combined (union) and stored in the place of \n        mutations of the parental lineage in temp_df. Neighbours are \n        mapped to their found parent and are stored in alias_df_temp, \n        since there is potential for surther mapping. This parental \n        lineage also becomes the parental lineage for the \n        sublineages that had these neighbours as parental \n        lineage in alias_df_temp.These neighbors are removed from \n        longlineage_df and the loop is iterated for the next round.\n        \n        5. Else if the length of the parental lineage is \n        equal to 1 then everything in the previous point \n        that was written in the alias_df_temp is written to\n        alias_df. Mutations are not meddled with, since it is \n        the ultimate paretnal lineage and there is no go further.\n\n        6. If no parental lineage was found then the the\n        Neighbours are mapped to the pattern which is the\n        name of the neigbors without the last character. This\n        pattern concatinated with x becomes the parental \n        lineage of the neighbors. This also becomes the \n        parental lineage for those sublineages for which the \n        nighbors were parental lineage.\n\n    2. If there are no neighbors found\n\n        1. Code directly starts finding the parental \n        lineage for the element being considered.\n\n        2. If paretnal lineage is found and the length of \n        the lineage is more than 1, the element in hand \n        is mapped to the found paretnal lineage and jaccard \n        value is stored in the alias_df_temp.  Mutations of \n        the element and the found parental lineage is combined and \n        stored in the place of the parental mutations in temp_df\n\n        3. Sublineages for which the lineage in hand is the parental\n        lineage in alias_df_temp gets mapped to the newly found parental lineage.\n\n        4. If the length of the parental lineage being \n        found is equal to one then point 2,3 is repeated \n        but difference would be that instaed of \n        alias_temp_df, alias_df is used and mutations are not meddeled with.\n\n    3. If no parerntal and neighbors were found\n\n        1. The lineage being considered is mapped to \n        itself.\n\n        2. For sublineages in the alias_df_temp that has \n        the lineage being considered as parental lineage is \n        remains the same. It is just transfered to \n        alias_df with no changes.\n\n    \n    Once the longlineage_df has been fully processed if \n    there are entries in temp_df long_sublineage is called else chunk lineage is called.\n    \n\n\n\n    END\n\nEnd\n\u003c/code\u003e\u003c/pre\u003e\n\u003cpre class=\"language-{algorithm}\"\u003e\u003ccode class=\"language-{Algorithm}\"\u003eFunction find_jaccard(pat,search_df,pat_mutations=0)\n\n    search_lineage_loc\u0026#x3C;-grep(pat,search_df$lineage)\n\n    1. If pat_mutations==0 means the function is finding the\n    neighbours. Else the function is overloaded\n    to find the parental lineage.\n\n    2. If pat_mutations==0 the length(search_lineage_loc) should be\n    more than 1 - neighbours other than the lineage in hand.\n\n    3. If no neighbours were found then function returns \n    neighbours=\"0\", jaccard_value=-1,neighbour_loc=0\n\n    4. Other than point 2 the overloaded function does the\n    same functionality for both the overloaded purposes\n    and returns jaccard value, neighbours, neighbour_loc \nEnd\n\u003c/code\u003e\u003c/pre\u003e\n\u003cpre class=\"language-{find\"\u003e\u003ccode class=\"language-{Find\"\u003eFunction Find_parental(pat,parental_df)\n\n    1. Recursively searches with the pattern \n    until it finds the parental lineage satisfying \n    the conditions \n    2. The pattern is shortened every iteration.\nEnd\n\u003c/code\u003e\u003c/pre\u003e\n\u003cp\u003e\u003cimg src=\"/SARS-Cov2/assets/Pics/mapping_lineages.png\" alt=\"Flowchart to explain\"\u003e\n\u003ca href=\"/SARS-Cov2/notes/xhw6w5ghbjhkzbo7huxzhwg#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay\"\u003equestion on the treshold\u003c/a\u003e\u003c/p\u003e","noteIndex":{"id":"paa0s59lp320n6q8rghycjw","title":"Work on SARS Cov2","desc":"","updated":1700240746536,"created":1700233379150,"custom":{"nav_order":0,"permalink":"/"},"fname":"root","type":"note","vault":{"fsPath":".","selfContained":true,"name":"Literature"},"contentHash":"6124b7f80065618c049c13a49f0dbed1","links":[],"anchors":{},"children":["1hnn8maoednnxdw5feqd4kq","nve3ld8zkeg6b2hgygrh1rp","v4t96j5kch5mq12272qsyih","r423m96u71ix4pb458fk8u2"],"parent":null,"data":{},"body":"\n"},"collectionChildren":null,"customHeadContent":null,"config":{"version":5,"dev":{"enablePreviewV2":true,"enableSelfContainedVaults":true},"commands":{"lookup":{"note":{"selectionMode":"extract","confirmVaultOnCreate":true,"vaultSelectionModeOnCreate":"smart","leaveTrace":false,"bubbleUpCreateNew":true,"fuzzThreshold":0.2}},"randomNote":{},"insertNoteLink":{"aliasMode":"none","enableMultiSelect":false},"insertNoteIndex":{"enableMarker":false},"copyNoteLink":{"aliasMode":"title"},"templateHierarchy":"template"},"workspace":{"vaults":[{"fsPath":".","selfContained":true,"name":"Literature"}],"journal":{"dailyDomain":"daily","name":"journal","dateFormat":"y.MM.dd","addBehavior":"childOfDomain"},"scratch":{"name":"scratch","dateFormat":"y.MM.dd.HHmmss","addBehavior":"asOwnDomain"},"task":{"name":"task","dateFormat":"y.MM.dd","addBehavior":"asOwnDomain","statusSymbols":{"":" ","wip":"w","done":"x","assigned":"a","moved":"m","blocked":"b","delegated":"l","dropped":"d","pending":"y"},"taskCompleteStatus":["done","x"],"prioritySymbols":{"H":"high","M":"medium","L":"low"},"todoIntegration":false,"createTaskSelectionType":"selection2link"},"graph":{"zoomSpeed":1,"createStub":false},"enableAutoCreateOnDefinition":false,"enableXVaultWikiLink":false,"enableRemoteVaultInit":true,"enableUserTags":true,"enableHashTags":true,"workspaceVaultSyncMode":"noCommit","enableAutoFoldFrontmatter":false,"enableEditorDecorations":true,"maxPreviewsCached":10,"maxNoteLength":204800,"enableFullHierarchyNoteTitle":false},"preview":{"enableFMTitle":true,"enableNoteTitleForLink":true,"enableFrontmatterTags":true,"enableHashesForFMTags":false,"enablePrettyRefs":true,"enableKatex":true,"automaticallyShowPreview":false},"publishing":{"enableFMTitle":true,"enableNoteTitleForLink":true,"enablePrettyRefs":true,"enableKatex":true,"copyAssets":true,"siteHierarchies":["root"],"writeStubs":false,"siteRootDir":"docs","seo":{"title":"Dendron","description":"Personal Knowledge Space"},"github":{"enableEditLink":true,"editLinkText":"Edit this page on GitHub","editBranch":"main","editViewMode":"tree"},"enableSiteLastModified":true,"enableFrontmatterTags":true,"enableHashesForFMTags":false,"enableRandomlyColoredTags":true,"enableTaskNotes":true,"enablePrettyLinks":true,"searchMode":"search","siteUrl":"https://vishnushiri02.github.io","assetsPrefix":"/SARS-Cov2","siteFaviconPath":"favicon.ico","siteIndex":"root"}}},"__N_SSG":true},"page":"/notes/[id]","query":{"id":"vhn93xdheb909udqychwrcl"},"buildId":"npK0PGR6Fa7mwLej5tvS3","assetPrefix":"/SARS-Cov2","isFallback":false,"gsp":true,"scriptLoader":[]}</script></body></html>

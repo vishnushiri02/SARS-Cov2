@@ -1,0 +1,89 @@
+{
+  "roots": [
+    {
+      "key": "1hnn8maoednnxdw5feqd4kq",
+      "title": "Analysis of the varient trend plots",
+      "icon": null,
+      "hasTitleNumberOutlined": false,
+      "vaultName": "Literature",
+      "children": []
+    },
+    {
+      "key": "nve3ld8zkeg6b2hgygrh1rp",
+      "title": "Appendix",
+      "icon": null,
+      "hasTitleNumberOutlined": false,
+      "vaultName": "Literature",
+      "children": []
+    },
+    {
+      "key": "v4t96j5kch5mq12272qsyih",
+      "title": "Glossary",
+      "icon": null,
+      "hasTitleNumberOutlined": false,
+      "vaultName": "Literature",
+      "children": []
+    },
+    {
+      "key": "r423m96u71ix4pb458fk8u2",
+      "title": "Work_documented",
+      "icon": null,
+      "hasTitleNumberOutlined": false,
+      "vaultName": "Literature",
+      "children": [
+        {
+          "key": "g9181ia6dhnmpqfklf2mwit",
+          "title": "Finding_surface_residues",
+          "icon": null,
+          "hasTitleNumberOutlined": false,
+          "vaultName": "Literature",
+          "children": []
+        },
+        {
+          "key": "vhn93xdheb909udqychwrcl",
+          "title": "Mapping_lineages",
+          "icon": null,
+          "hasTitleNumberOutlined": false,
+          "vaultName": "Literature",
+          "children": []
+        },
+        {
+          "key": "o7n9flqgbqf3xbm437bc0ih",
+          "title": "checking inconsistencies",
+          "icon": null,
+          "hasTitleNumberOutlined": false,
+          "vaultName": "Literature",
+          "children": []
+        },
+        {
+          "key": "xhw6w5ghbjhkzbo7huxzhwg",
+          "title": "Possible_questions",
+          "icon": null,
+          "hasTitleNumberOutlined": false,
+          "vaultName": "Literature",
+          "children": []
+        }
+      ]
+    }
+  ],
+  "child2parent": {
+    "1hnn8maoednnxdw5feqd4kq": null,
+    "nve3ld8zkeg6b2hgygrh1rp": null,
+    "v4t96j5kch5mq12272qsyih": null,
+    "r423m96u71ix4pb458fk8u2": null,
+    "g9181ia6dhnmpqfklf2mwit": "r423m96u71ix4pb458fk8u2",
+    "vhn93xdheb909udqychwrcl": "r423m96u71ix4pb458fk8u2",
+    "o7n9flqgbqf3xbm437bc0ih": "r423m96u71ix4pb458fk8u2",
+    "xhw6w5ghbjhkzbo7huxzhwg": "r423m96u71ix4pb458fk8u2"
+  },
+  "notesLabelById": {
+    "1hnn8maoednnxdw5feqd4kq": "Analysis of the varient trend plots",
+    "nve3ld8zkeg6b2hgygrh1rp": "Appendix",
+    "v4t96j5kch5mq12272qsyih": "Glossary",
+    "r423m96u71ix4pb458fk8u2": "Work_documented",
+    "g9181ia6dhnmpqfklf2mwit": "Finding_surface_residues",
+    "vhn93xdheb909udqychwrcl": "Mapping_lineages",
+    "o7n9flqgbqf3xbm437bc0ih": "checking inconsistencies",
+    "xhw6w5ghbjhkzbo7huxzhwg": "Possible_questions"
+  }
+}

@@ -1,0 +1,87 @@
+<h1 id="possible_questions">Possible_questions<a aria-hidden="true" class="anchor-heading icon-link" href="#possible_questions"></a></h1>
+<h3 id="1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards">1. Why/How was this particular time period (Jan22-Oct23) chosen, while pandemic has been prevelant 2020 onwards?<a aria-hidden="true" class="anchor-heading icon-link" href="#1-whyhow-was-this-particular-time-period-jan22-oct23-chosen-while-pandemic-has-been-prevelant-2020-onwards"></a></h3>
+<ul>
+<li>ANS:</li>
+</ul>
+<h3 id="2-there-are-continuous-deposition-of-sequences-to-gisaid-even-for-the-earlier-dates-the-following-tables-shows-the-difference-in-numbers-will-calculating-ci-account-these-changes-">2. There are continuous deposition of sequences to GISAID even for the earlier dates, the following tables shows the difference in numbers. Will calculating CI account these changes ?<a aria-hidden="true" class="anchor-heading icon-link" href="#2-there-are-continuous-deposition-of-sequences-to-gisaid-even-for-the-earlier-dates-the-following-tables-shows-the-difference-in-numbers-will-calculating-ci-account-these-changes-"></a></h3>
+<div class="table-responsive">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Country</th><th>Number of downloaded(18-20 Nov 23)</th><th>Number in GISAID at later date(8 Dec 2023)</th></tr></thead><tbody><tr><td>India</td><td>15783</td><td>15809</td></tr><tr><td>South_korea</td><td>13808</td><td>13826</td></tr><tr><td>Denmark</td><td>163900</td><td>163905</td></tr><tr><td>Germany</td><td>66236</td><td>66244</td></tr><tr><td>Norway</td><td>12264</td><td>12264</td></tr><tr><td>Spain</td><td>17921</td><td>18039</td></tr><tr><td>UK</td><td>30597</td><td>30606</td></tr><tr><td>Canada</td><td>20791</td><td>20802</td></tr><tr><td>USA</td><td>74971</td><td>75165</td></tr><tr><td>australia</td><td>13257</td><td>13261</td></tr></tbody></table></div>
+<ul>
+<li>ANS: If there is major difference CI wouldn't account for these. In that case we have to either redownload new set of data or we have to jjust specify the date of download in the report</li>
+</ul>
+<h3 id="3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay">3. The jaccard index treshold chosen to decide a parent or a neighbour is 50%. Is this okay?<a aria-hidden="true" class="anchor-heading icon-link" href="#3-the-jaccard-index-treshold-chosen-to-decide-a-parent-or-a-neighbour-is-50-is-this-okay"></a></h3>
+<ul>
+<li>ANS: Jaccard index is not the right way to go about, we have to get the distance, create a distance table based on the spike mutations.</li>
+</ul>
+<h3 id="4-why-do-we-do-linear-interpolation-why-not-spline-interpolation">4. Why do we do linear interpolation, why not spline interpolation?<a aria-hidden="true" class="anchor-heading icon-link" href="#4-why-do-we-do-linear-interpolation-why-not-spline-interpolation"></a></h3>
+<p>-ANS: In a sparse data using a spline interpolation might give unexpected results which might not be right.</p>
+<h3 id="5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa-">5. Aaccording to Uniprot the RBD region in spike  is 319-541aa <img src="/SARS-Cov2/assets/Pics/uniprot_spikeRBD.png" alt="spike rbd uniprot"><a aria-hidden="true" class="anchor-heading icon-link" href="#5-aaccording-to-uniprot-the-rbd-region-in-spike--is-319-541aa-"></a></h3>
+<p>ANS: There are no interesting epitopes before position 330 and after position 530 so it's fine.</p>
+<h3 id="6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi">6. If a RBD spike position in the wildtype is occupied by a hydrophobic residue and it is replaced by hydrophilic residue, the solvent accessibility might change probably due to the difference in the fold.  In that case should we study these positions in each of the VOI?<a aria-hidden="true" class="anchor-heading icon-link" href="#6-if-a-rbd-spike-position-in-the-wildtype-is-occupied-by-a-hydrophobic-residue-and-it-is-replaced-by-hydrophilic-residue-the-solvent-accessibility-might-change-probably-due-to-the-difference-in-the-fold--in-that-case-should-we-study-these-positions-in-each-of-the-voi"></a></h3>
+<p>ANS: The Mutation doesnt alter the fold to a great extent, if that happens it will affect the function of the protein, so using the wildtype to compute the solvent accessibility is not so bad idea.</p>
+<h3 id="7--the-computed-pressure-trend-for-a-position-is-obtained-by-calculating-pressure-at-multiple-time-points-for-now-pressure-is-computed-every-180-days-the-time-horizon-is-not-exactly-divisible-into-bins-of-180-days-there-will-be-difference-in-the-final-bin-will-this-be-a-problem">7.  The computed pressure trend for a position is obtained by calculating pressure at multiple time points. For now pressure is computed every 180 days. The time horizon is not exactly divisible into bins of 180 days. There will be difference in the final bin. Will this be a problem?<a aria-hidden="true" class="anchor-heading icon-link" href="#7--the-computed-pressure-trend-for-a-position-is-obtained-by-calculating-pressure-at-multiple-time-points-for-now-pressure-is-computed-every-180-days-the-time-horizon-is-not-exactly-divisible-into-bins-of-180-days-there-will-be-difference-in-the-final-bin-will-this-be-a-problem"></a></h3>
+<hr>
+<strong>Backlinks</strong>
+<ul>
+<li><a href="/SARS-Cov2/notes/r423m96u71ix4pb458fk8u2">Work_documented</a></li>
+<li><a href="/SARS-Cov2/notes/vhn93xdheb909udqychwrcl">Mapping_lineages</a></li>
+</ul>

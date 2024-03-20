@@ -1,0 +1,41 @@
+<h1 id="finding_surface_residues">Finding_surface_residues<a aria-hidden="true" class="anchor-heading icon-link" href="#finding_surface_residues"></a></h1>
+<h2 id="dssp-server">DSSP server<a aria-hidden="true" class="anchor-heading icon-link" href="#dssp-server"></a></h2>
+<p><a href="https://www3.cmbi.umcn.nl/xssp/">DSSP server</a></p>
+<ul>
+<li>Input : PDB file (6xlu)</li>
+<li>The output contains a column names ACC. The values in this column is either number of water molecule in contact with the residue*10 or Residue's water exposed surface in <span class="math math-inline"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mover accent="true"><mi>A</mi><mo>˚</mo></mover><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">\AA^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9468em;"></span><span class="mord"><span class="mord accent"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9468em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathnormal">A</span></span><span style="top:-3.2523em;"><span class="pstrut" style="height:3em;"></span><span class="accent-body" style="left:-0.2361em;"><span class="mord">˚</span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span></span>.
+<img src="/SARS-Cov2/assets/Pics/DSSP_output.png" alt="DSSP_output"></li>
+<li>The ouput obtained was causing problems when read through R.</li>
+<li>To circumvent this, dssp was installed in the system and the protein stucture files (6xlu.pdb) was used to obtain the dssp file.</li>
+</ul>
+<pre class="language-{bash}"><code class="language-{bash}">dssp 6xlu.pdb 6xlu.dssp
+</code></pre>
+<ul>
+<li>This dssp file was parsed in R using the function parse.dssp from ptm package.</li>
+</ul>
+<h2 id="get-area-server">Get Area server<a aria-hidden="true" class="anchor-heading icon-link" href="#get-area-server"></a></h2>
+<p><a href="https://curie.utmb.edu/getarea.html">GETAREA</a></p>
+<ul>
+<li>Input: PDB file (6xlu)</li>
+<li>The output contains a columns saying if the residue is inside or outside - represented as (i/o)
+<img src="/SARS-Cov2/assets/Pics/getarea_output.png" alt="getarea_output"></li>
+<li>The output is displayed on the webpage</li>
+<li>This output was manually copied and was converted into a csv file after doing some text editing. This way the file could be easily read in R</li>
+</ul>
+<h2 id="netsurfp-30">NetSurfP 3.0<a aria-hidden="true" class="anchor-heading icon-link" href="#netsurfp-30"></a></h2>
+<p><a href="https://services.healthtech.dtu.dk/services/NetSurfP-3.0/">NetSurfP 3.0</a></p>
+<ul>
+<li>Input: <a href="https://www.uniprot.org/uniprotkb/P0DTC2/entry#sequences">FASTA sequence</a> is submitted</li>
+<li>Output: It gives the solvent accessibility, relative solvent accessibility which based on a treshold of 25% - more than 25% the residue is exposed, less than that the residue is burried.
+<img src="/SARS-Cov2/assets/Pics/NetsurfP3_0.png" alt="output"></li>
+<li>The RSA values can be taken from the csv file which could be downloaded from the result site.</li>
+</ul>
+<blockquote>
+<p>Note:
+A pariwise sequence alignment was done with the uniprot spike sequence and the sequence obtained from the 6xlu structure. <img src="/SARS-Cov2/assets/Pics/clustal_w_alignment.png" alt="The alignment"> The sequences align fairly well.</p>
+</blockquote>
+<hr>
+<strong>Backlinks</strong>
+<ul>
+<li><a href="/SARS-Cov2/notes/r423m96u71ix4pb458fk8u2">Work_documented</a></li>
+</ul>
